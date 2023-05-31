@@ -13,24 +13,17 @@
 
 <body>
   <h1>Erply-test-task</h1>
-  <form action="/admin/logout" method="post">
-    <button type="submit">Logout</button>
-  </form>
-  <form action="/admin/getcustomers" method="post">
-    <button type="submit">Customers</button>
-  </form>
-  <h2>Logged In!</h2>
-
-  {{if .FetchCustomers}}
-  <div>
-    <h3>Fetched Customers</h3>
-    <ul>
-      {{range .Records}}
-      <li>{{.FullName}}</li>
-      {{end}}
-    </ul>
-  </div>
-  {{end}}
+  <ul>
+    {{range .Customers.Records}}
+      <li>
+        <strong>Full Name:</strong> {{.FullName}}<br>
+        <strong>Phone:</strong> {{.Phone}}<br>
+        <strong>Email:</strong> {{.Email}}<br>
+        <strong>Address:</strong> {{.Address}}<br>
+        <strong>Customer Card Number:</strong> {{.CustomerCardNumber}}
+      </li>
+    {{end}}
+  </ul>
 </body>
 
 </html>

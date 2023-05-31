@@ -12,10 +12,10 @@ func (m *SqliteDB) AddSession(clientCode, username, password, sessionKey, sessio
 	defer cancel()
 
 	var session models.Session
-	session.ClientCode, _ = utils.HashInput(clientCode)
-	session.Username, _ = utils.HashInput(username)
-	session.Password, _ = utils.HashInput(password)
-	session.SessionKey, _ = utils.HashInput(sessionKey)
+	session.ClientCode, _ = utils.Encrypt(clientCode, utils.SecretKey)
+	session.Username, _ = utils.Encrypt(username, utils.SecretKey)
+	session.Password, _ = utils.Encrypt(password, utils.SecretKey)
+	session.SessionKey, _ = utils.Encrypt(sessionKey, utils.SecretKey)
 
 	stmt := `INSERT INTO
 				 sessions (client_code, username, password, session_key, session_token)

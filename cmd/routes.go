@@ -16,6 +16,7 @@ func (app *application) routes() http.Handler {
 		mux.Use(app.authRequired)
 		mux.Get("/main", app.MainPage)
 		mux.Post("/logout", app.Logout)
+		mux.Post("/getcustomers", app.FetchCustomers)
 	})
 
 	return mux

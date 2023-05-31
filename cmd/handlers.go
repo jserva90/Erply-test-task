@@ -39,6 +39,39 @@ func (app *application) MainPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) Home(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("session_token")
+	if err == nil {
+		session, err := app.DB.GetSession(cookie.Value)
+		if err != nil {
+			fmt.Println(err)
+			goto ContinueExecution
+		}
+		decryptedClientCode, err := utils.Decrypt(session.ClientCode, utils.SecretKey)
+		if err != nil {
+			fmt.Println(err)
+			goto ContinueExecution
+		}
+		decryptedSessionKey, err := utils.Decrypt(session.SessionKey, utils.SecretKey)
+		if err != nil {
+			fmt.Println(err)
+			goto ContinueExecution
+		}
+
+		sessionInfo, err := app.getSessionInfo(decryptedClientCode, decryptedSessionKey)
+		if err != nil {
+			fmt.Println(err)
+
+			goto ContinueExecution
+		}
+
+		if utils.IsSessionExpired(*sessionInfo) {
+			goto ContinueExecution
+		}
+
+		http.Redirect(w, r, "/admin/main", http.StatusSeeOther)
+	}
+
+ContinueExecution:
 	template := template.Must(template.ParseFiles("templates/index.html"))
 
 	if r.URL.Path != "/" {
@@ -47,6 +80,7 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case "GET":
+
 		err := template.Execute(w, nil)
 		if err != nil {
 			ErrorHandler(w, "not found", http.StatusNotFound)
@@ -95,6 +129,62 @@ func (app *application) Logout(w http.ResponseWriter, r *http.Request) {
 	utils.DeleteCookie(w, r)
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+}
+
+func (app *application) FetchCustomers(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("session_token")
+	if err != nil {
+		return
+	}
+
+	session, err := app.DB.GetSession(cookie.Value)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	decryptedClientCode, err := utils.Decrypt(session.ClientCode, utils.SecretKey)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	decryptedSessionKey, err := utils.Decrypt(session.SessionKey, utils.SecretKey)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	sessionInfo, err := app.getSessionInfo(decryptedClientCode, decryptedSessionKey)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	if utils.IsSessionExpired(*sessionInfo) {
+		return
+	}
+
+	customers, err := app.getCustomers(decryptedClientCode, decryptedSessionKey)
+	if err != nil {
+		return
+	}
+
+	data := struct {
+		Customers models.CustomerResponse
+	}{
+		Customers: *customers,
+	}
+
+	// Execute the template and pass the data
+	tmpl, err := template.ParseFiles("templates/result.html")
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	err = tmpl.Execute(w, data)
+	if err != nil {
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 }
 
 func ErrorHandler(w http.ResponseWriter, er string, code int) {
@@ -153,7 +243,7 @@ func (app *application) verifyUser(clientCode, username, password string) (*mode
 	return &response, nil
 }
 
-func (app *application) verifySessionValidity(clientCode, sessionKey string) ([]byte, error) {
+func (app *application) getSessionInfo(clientCode, sessionKey string) (*models.GetSessionKeyInfoResponse, error) {
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
 	data := url.Values{}
 	data.Set("clientCode", clientCode)
@@ -180,5 +270,51 @@ func (app *application) verifySessionValidity(clientCode, sessionKey string) ([]
 		return nil, err
 	}
 
-	return body, nil
+	var response models.GetSessionKeyInfoResponse
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Status.ErrorCode != 0 {
+		return nil, fmt.Errorf("failed to authenticate")
+	}
+
+	return &response, nil
+}
+
+func (app *application) getCustomers(clientCode, sessionKey string) (*models.CustomerResponse, error) {
+	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
+	data := url.Values{}
+	data.Set("clientCode", clientCode)
+	data.Set("sessionKey", sessionKey)
+	data.Set("request", "getCustomers")
+	data.Set("sendContentType", "1")
+
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var response models.CustomerResponse
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	return &response, nil
 }

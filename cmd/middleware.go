@@ -10,9 +10,10 @@ func (app *application) authRequired(next http.Handler) http.Handler {
 			http.Redirect(w, r, "/", http.StatusSeeOther)
 			return
 		}
-
+		_, err = app.DB.GetSession(cookie.Value)
 		if err != nil {
-			w.WriteHeader(http.StatusUnauthorized)
+			ErrorHandler(w, "unauthorized", http.StatusUnauthorized)
+			// w.WriteHeader(http.StatusUnauthorized)
 			return
 		}
 		next.ServeHTTP(w, r)
