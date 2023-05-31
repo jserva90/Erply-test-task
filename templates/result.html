@@ -4,26 +4,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=100%" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Erply-test-task</title>
-  <link rel="stylesheet" href="static/style.css" />
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body>
-  <h1>Erply-test-task</h1>
-  <ul>
-    {{range .Customers.Records}}
-      <li>
+<body class="bg-gray-100">
+  <div class="container mx-auto py-6 px-4">
+    <h1 class="text-2xl font-bold mb-4">Erply-test-task</h1>
+
+    <form action="/admin/main" method="get" class="mb-4">
+      <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">Back</button>
+    </form>
+
+    <ul>
+      {{range .Customers.Records}}
+      <li class="mb-4">
+        <strong>Customer ID:</strong> {{.CustomerID}}<br>
         <strong>Full Name:</strong> {{.FullName}}<br>
         <strong>Phone:</strong> {{.Phone}}<br>
         <strong>Email:</strong> {{.Email}}<br>
         <strong>Address:</strong> {{.Address}}<br>
         <strong>Customer Card Number:</strong> {{.CustomerCardNumber}}
       </li>
-    {{end}}
-  </ul>
+      {{end}}
+    </ul>
+  </div>
+
 </body>
 
 </html>

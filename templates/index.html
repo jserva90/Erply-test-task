@@ -4,25 +4,30 @@
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=100%" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Erply-test-task</title>
-  <link rel="stylesheet" href="static/style.css" />
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
-<body>
-  <h1>Erply-test-task</h1>
-  <h2>Login</h2>
-    <form action="/" method="post">
-        <label for="clientCode">Client Code:</label>
-        <input type="text" id="clientCode" name="clientCode"><br><br>
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username"><br><br>
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password"><br><br>
-        <input type="submit" value="Login">
+<body class="bg-gray-100">
+  <div class="container mx-auto py-6 px-4">
+    <h1 class="text-2xl font-bold mb-4">Erply-test-task</h1>
+    <h2 class="text-xl font-semibold mb-4">Login</h2>
+
+    <form action="/" method="post" class="mb-4">
+      <label for="clientCode" class="mr-2 font-semibold">Client Code:</label>
+      <input type="text" id="clientCode" name="clientCode" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" /><br><br>
+
+      <label for="username" class="mr-2 font-semibold">Username:</label>
+      <input type="text" id="username" name="username" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" /><br><br>
+
+      <label for="password" class="mr-2 font-semibold">Password:</label>
+      <input type="password" id="password" name="password" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" /><br><br>
+
+      <input type="submit" value="Login" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md" />
     </form>
+  </div>
 
 </body>
 

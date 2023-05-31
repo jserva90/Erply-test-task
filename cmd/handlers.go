@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -137,30 +138,9 @@ func (app *application) FetchCustomers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	session, err := app.DB.GetSession(cookie.Value)
+	decryptedClientCode, decryptedSessionKey, err := app.getClientCodeAndSessionKey(cookie.Value)
 	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	decryptedClientCode, err := utils.Decrypt(session.ClientCode, utils.SecretKey)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	decryptedSessionKey, err := utils.Decrypt(session.SessionKey, utils.SecretKey)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	sessionInfo, err := app.getSessionInfo(decryptedClientCode, decryptedSessionKey)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-
-	if utils.IsSessionExpired(*sessionInfo) {
-		return
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
 	customers, err := app.getCustomers(decryptedClientCode, decryptedSessionKey)
@@ -184,6 +164,44 @@ func (app *application) FetchCustomers(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
+	}
+}
+
+func (app *application) SaveCustomer(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/admin/savecustomer" {
+		ErrorHandler(w, "not found", http.StatusNotFound)
+		return
+	}
+
+	template := template.Must(template.ParseFiles("templates/savecustomer.html"))
+	switch r.Method {
+	case "GET":
+		err := template.Execute(w, nil)
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+	case "POST":
+		cookie, err := r.Cookie("session_token")
+		if err != nil {
+			return
+		}
+
+		decryptedClientCode, decryptedSessionKey, err := app.getClientCodeAndSessionKey(cookie.Value)
+		if err != nil {
+			ErrorHandler(w, err.Error(), http.StatusUnauthorized)
+		}
+
+		fullName := r.FormValue("fullName")
+		email := r.FormValue("email")
+		phoneNumber := r.FormValue("phone")
+
+		err = app.saveCustomer(decryptedClientCode, decryptedSessionKey, fullName, email, phoneNumber)
+		if err != nil {
+			ErrorHandler(w, err.Error(), http.StatusMethodNotAllowed)
+		}
+	default:
+		ErrorHandler(w, "method not supported", http.StatusMethodNotAllowed)
 	}
 }
 
@@ -317,4 +335,47 @@ func (app *application) getCustomers(clientCode, sessionKey string) (*models.Cus
 	}
 
 	return &response, nil
+}
+
+func (app *application) saveCustomer(clientCode, sessionKey, fullName, email, phoneNumber string) error {
+	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
+	data := url.Values{}
+	data.Set("clientCode", clientCode)
+	data.Set("sessionKey", sessionKey)
+	data.Set("request", "saveCustomer")
+	data.Set("fullName", fullName)
+	data.Set("email", email)
+	data.Set("phone", phoneNumber)
+	data.Set("sendContentType", "1")
+
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	var response models.SaveCustomerResponse
+	err = json.Unmarshal([]byte(body), &response)
+	if err != nil {
+		return err
+	}
+
+	if response.Status.ErrorCode != 0 {
+		return errors.New("could not save customer")
+	}
+
+	return nil
 }
