@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	_ "github.com/jserva90/Erply-test-task/docs"
 	database "github.com/jserva90/Erply-test-task/persistance"
 )
 
@@ -16,6 +17,11 @@ const (
 	PORT = 8080
 )
 
+// @title Erply Test Task
+// @version 1.0
+// @description This is a test task for Erply using Erply API.
+// @host localhost:8080
+// @BasePath /
 func main() {
 	var app application
 

@@ -1,0 +1,63 @@
+basePath: /
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a test task for Erply using Erply API.
+  title: Erply Test Task
+  version: "1.0"
+paths:
+  /:
+    get:
+      description: Displays the home page
+      responses: {}
+      summary: Home Page
+      tags:
+      - Admin
+    post:
+      description: Displays the home page
+      responses: {}
+      summary: Home Page
+      tags:
+      - Admin
+  /admin/customers:
+    get:
+      description: Fetches the customers
+      responses: {}
+      summary: Fetch Customers
+      tags:
+      - Admin
+  /admin/logout:
+    get:
+      description: Logs out the user
+      responses: {}
+      summary: Logout
+      tags:
+      - Admin
+  /admin/main:
+    get:
+      description: Displays the main page
+      responses: {}
+      summary: Main Page
+      tags:
+      - Admin
+  /admin/savecustomer:
+    get:
+      description: Saves a customer
+      responses: {}
+      summary: Save Customer
+      tags:
+      - Admin
+    post:
+      description: Saves a customer
+      responses: {}
+      summary: Save Customer
+      tags:
+      - Admin
+  /admin/success:
+    get:
+      description: Displays the success page
+      responses: {}
+      summary: Success Page
+      tags:
+      - Admin
+swagger: "2.0"

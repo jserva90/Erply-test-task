@@ -1,0 +1,89 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a test task for Erply using Erply API.",
+        "title": "Erply Test Task",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/": {
+            "get": {
+                "description": "Displays the home page",
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Home Page",
+                "responses": {}
+            },
+            "post": {
+                "description": "Displays the home page",
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Home Page",
+                "responses": {}
+            }
+        },
+        "/admin/customers": {
+            "get": {
+                "description": "Fetches the customers",
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Fetch Customers",
+                "responses": {}
+            }
+        },
+        "/admin/logout": {
+            "get": {
+                "description": "Logs out the user",
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Logout",
+                "responses": {}
+            }
+        },
+        "/admin/main": {
+            "get": {
+                "description": "Displays the main page",
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Main Page",
+                "responses": {}
+            }
+        },
+        "/admin/savecustomer": {
+            "get": {
+                "description": "Saves a customer",
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Save Customer",
+                "responses": {}
+            },
+            "post": {
+                "description": "Saves a customer",
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Save Customer",
+                "responses": {}
+            }
+        },
+        "/admin/success": {
+            "get": {
+                "description": "Displays the success page",
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Success Page",
+                "responses": {}
+            }
+        }
+    }
+}

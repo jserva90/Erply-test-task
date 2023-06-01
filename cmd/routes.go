@@ -4,6 +4,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	_ "github.com/jserva90/Erply-test-task/docs"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func (app *application) routes() http.Handler {
@@ -21,6 +23,8 @@ func (app *application) routes() http.Handler {
 		mux.Get("/savecustomer", app.SaveCustomer)
 		mux.Post("/savecustomer", app.SaveCustomer)
 	})
+
+	mux.Mount("/swagger", httpSwagger.WrapHandler)
 
 	return mux
 }
