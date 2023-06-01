@@ -22,7 +22,7 @@ func (app *application) getClientCodeAndSessionKey(sessionCookie string) (string
 		return "", "", fmt.Errorf("failed to decrypt session key: %w", err)
 	}
 
-	sessionInfo, err := app.getSessionInfo(decryptedClientCode, decryptedSessionKey)
+	sessionInfo, err := app.getSessionKeyInfo(decryptedClientCode, decryptedSessionKey)
 	if err != nil {
 		return "", "", fmt.Errorf("failed to get session info: %w", err)
 	}

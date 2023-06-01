@@ -15,6 +15,7 @@ func (app *application) routes() http.Handler {
 	mux.Route("/admin", func(mux chi.Router) {
 		mux.Use(app.authRequired)
 		mux.Get("/main", app.MainPage)
+		mux.Get("/success", app.Success)
 		mux.Post("/logout", app.Logout)
 		mux.Post("/getcustomers", app.FetchCustomers)
 		mux.Get("/savecustomer", app.SaveCustomer)

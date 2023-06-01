@@ -1,38 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Erply-test-task</title>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Erply-test-task</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
 
+  <body class="bg-gray-100">
+    <div class="container mx-auto py-6 px-4">
+      <h1 class="text-2xl font-bold mb-4">Erply-test-task</h1>
 
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-</head>
+      <form action="/admin/main" method="get" class="mb-4">
+        <button
+          type="submit"
+          class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md"
+        >
+          Back
+        </button>
+      </form>
 
-<body class="bg-gray-100">
-  <div class="container mx-auto py-6 px-4">
-    <h1 class="text-2xl font-bold mb-4">Erply-test-task</h1>
+      <form action="/admin/savecustomer" method="POST" class="mb-4">
+        <label for="fullName" class="mr-2 font-semibold">Full Name:</label>
+        <input
+          type="text"
+          id="fullName"
+          name="fullName"
+          required
+          class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        /><br /><br />
 
-    <form action="/admin/main" method="get" class="mb-4">
-      <button type="submit" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md">Back</button>
-    </form>
+        <label for="email" class="mr-2 font-semibold">Email:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        /><br /><br />
 
-    <form action="/admin/savecustomer" method="POST" class="mb-4">
-      <label for="fullName" class="mr-2 font-semibold">Full Name:</label>
-      <input type="text" id="fullName" name="fullName" required class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" /><br><br>
+        <label for="phone" class="mr-2 font-semibold">Phone:</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          required
+          class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        /><br /><br />
 
-      <label for="email" class="mr-2 font-semibold">Email:</label>
-      <input type="email" id="email" name="email" required class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" /><br><br>
-
-      <label for="phone" class="mr-2 font-semibold">Phone:</label>
-      <input type="tel" id="phone" name="phone" required class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" /><br><br>
-
-      <input type="submit" value="Create" class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md" />
-    </form>
-  </div>
-
-</body>
-
+        <input
+          type="submit"
+          value="Create"
+          class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md"
+        />
+      </form>
+    </div>
+  </body>
 </html>

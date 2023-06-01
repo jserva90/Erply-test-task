@@ -7,15 +7,6 @@ import (
 	"encoding/base64"
 )
 
-// func HashInput(password string) (string, error) {
-// 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 4)
-// 	return string(bytes), err
-// }
-
-//	func ValidateInputHash(password, hash string) error {
-//		err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-//		return err
-//	}
 var SecretKey = []byte("0123456789abcdef0123456789abcdef")
 
 func Encrypt(plaintext string, key []byte) (string, error) {

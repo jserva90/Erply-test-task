@@ -53,7 +53,7 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 			goto ContinueExecution
 		}
 
-		sessionInfo, err := app.getSessionInfo(decryptedClientCode, decryptedSessionKey)
+		sessionInfo, err := app.getSessionKeyInfo(decryptedClientCode, decryptedSessionKey)
 		if err != nil {
 			fmt.Println(err)
 
@@ -194,6 +194,27 @@ func (app *application) SaveCustomer(w http.ResponseWriter, r *http.Request) {
 		err = app.saveCustomer(decryptedClientCode, decryptedSessionKey, fullName, email, phoneNumber)
 		if err != nil {
 			ErrorHandler(w, err.Error(), http.StatusMethodNotAllowed)
+		}
+		http.Redirect(w, r, "/admin/success", http.StatusSeeOther)
+	default:
+		ErrorHandler(w, "method not supported", http.StatusMethodNotAllowed)
+	}
+}
+
+func (app *application) Success(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/admin/success" {
+		ErrorHandler(w, "not found", http.StatusNotFound)
+		return
+	}
+
+	template := template.Must(template.ParseFiles("templates/success.html"))
+
+	switch r.Method {
+	case "GET":
+		err := template.Execute(w, nil)
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
 		}
 	default:
 		ErrorHandler(w, "method not supported", http.StatusMethodNotAllowed)

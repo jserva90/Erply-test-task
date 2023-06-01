@@ -53,7 +53,7 @@ func (app *application) verifyUser(clientCode, username, password string) (*mode
 	return &response, nil
 }
 
-func (app *application) getSessionInfo(clientCode, sessionKey string) (*models.GetSessionKeyInfoResponse, error) {
+func (app *application) getSessionKeyInfo(clientCode, sessionKey string) (*models.GetSessionKeyInfoResponse, error) {
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
 	data := url.Values{}
 	data.Set("clientCode", clientCode)
