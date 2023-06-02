@@ -5,9 +5,22 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
+	"log"
+	"os"
+
+	"github.com/joho/godotenv"
 )
 
-var SecretKey = []byte("0123456789abcdef0123456789abcdef")
+var SecretKey []byte
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	SecretKey = []byte(os.Getenv("SECRET_KEY"))
+}
 
 func Encrypt(plaintext string, key []byte) (string, error) {
 	block, err := aes.NewCipher(key)

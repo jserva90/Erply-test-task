@@ -6,9 +6,9 @@ require (
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/golang-migrate/migrate/v4 v4.16.0
+	github.com/joho/godotenv v1.5.1
 	github.com/mattes/migrate v3.0.1+incompatible
 	github.com/mattn/go-sqlite3 v1.14.16
-	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe
 	github.com/swaggo/http-swagger v1.3.4
 	github.com/swaggo/swag v1.16.1
 )
@@ -23,6 +23,7 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/swaggo/files v0.0.0-20220610200504-28940afbdbfe // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sys v0.8.0 // indirect

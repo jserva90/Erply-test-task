@@ -7,4 +7,4 @@ TODO
 - .env file move secret key there
 - Swaggr
 - Unit tests
-
+- SecretKey global bad?

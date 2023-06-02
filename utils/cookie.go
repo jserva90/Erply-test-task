@@ -18,7 +18,7 @@ func DeleteCookie(w http.ResponseWriter, r *http.Request) {
 		Name:    "session_token",
 		Value:   "",
 		Path:    "/",
-		Expires: time.Unix(1, 0), // Set expiration time to a past value
+		Expires: time.Unix(1, 0),
 	}
 
 	http.SetCookie(w, cookie)
