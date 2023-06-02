@@ -1,10 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -35,13 +36,14 @@ func (app *application) verifyUser(clientCode, username, password string) (*mode
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	var bodyBuffer bytes.Buffer
+	_, err = io.Copy(&bodyBuffer, resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	var response models.Response
-	err = json.Unmarshal(body, &response)
+	err = json.Unmarshal(bodyBuffer.Bytes(), &response)
 	if err != nil {
 		return nil, err
 	}
@@ -92,14 +94,15 @@ func (app *application) verifyUserSwagger(w http.ResponseWriter, r *http.Request
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	var bodyBuffer bytes.Buffer
+	_, err = io.Copy(&bodyBuffer, resp.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	var response models.Response
-	err = json.Unmarshal(body, &response)
+	err = json.Unmarshal(bodyBuffer.Bytes(), &response)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -141,13 +144,14 @@ func (app *application) getSessionKeyInfo(clientCode, sessionKey string) (*model
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	var bodyBuffer bytes.Buffer
+	_, err = io.Copy(&bodyBuffer, resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	var response models.GetSessionKeyInfoResponse
-	err = json.Unmarshal(body, &response)
+	err = json.Unmarshal(bodyBuffer.Bytes(), &response)
 	if err != nil {
 		return nil, err
 	}
@@ -194,14 +198,15 @@ func (app *application) getSessionKeyInfoSwagger(w http.ResponseWriter, r *http.
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	var bodyBuffer bytes.Buffer
+	_, err = io.Copy(&bodyBuffer, resp.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	var response models.GetSessionKeyInfoResponse
-	err = json.Unmarshal(body, &response)
+	err = json.Unmarshal(bodyBuffer.Bytes(), &response)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -243,13 +248,14 @@ func (app *application) getCustomers(clientCode, sessionKey string) (*models.Cus
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	var bodyBuffer bytes.Buffer
+	_, err = io.Copy(&bodyBuffer, resp.Body)
 	if err != nil {
 		return nil, err
 	}
 
 	var response models.CustomerResponse
-	err = json.Unmarshal(body, &response)
+	err = json.Unmarshal(bodyBuffer.Bytes(), &response)
 	if err != nil {
 		return nil, err
 	}
@@ -292,14 +298,15 @@ func (app *application) getCustomersSwagger(w http.ResponseWriter, r *http.Reque
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	var bodyBuffer bytes.Buffer
+	_, err = io.Copy(&bodyBuffer, resp.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	var response models.CustomerResponse
-	err = json.Unmarshal(body, &response)
+	err = json.Unmarshal(bodyBuffer.Bytes(), &response)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -339,13 +346,14 @@ func (app *application) saveCustomer(clientCode, sessionKey, fullName, email, ph
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	var bodyBuffer bytes.Buffer
+	_, err = io.Copy(&bodyBuffer, resp.Body)
 	if err != nil {
 		return err
 	}
 
 	var response models.SaveCustomerResponse
-	err = json.Unmarshal([]byte(body), &response)
+	err = json.Unmarshal(bodyBuffer.Bytes(), &response)
 	if err != nil {
 		return err
 	}
@@ -401,14 +409,15 @@ func (app *application) saveCustomerSwagger(w http.ResponseWriter, r *http.Reque
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	var bodyBuffer bytes.Buffer
+	_, err = io.Copy(&bodyBuffer, resp.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	var response models.SaveCustomerResponse
-	err = json.Unmarshal(body, &response)
+	err = json.Unmarshal(bodyBuffer.Bytes(), &response)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
