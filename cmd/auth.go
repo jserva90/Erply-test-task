@@ -12,12 +12,12 @@ func (app *application) getClientCodeAndSessionKey(sessionCookie string) (string
 		return "", "", fmt.Errorf("failed to get session: %w", err)
 	}
 
-	decryptedClientCode, err := utils.Decrypt(session.ClientCode, utils.SecretKey)
+	decryptedClientCode, err := utils.Decrypt(session.ClientCode, utils.GetSecretKey())
 	if err != nil {
 		return "", "", fmt.Errorf("failed to decrypt client code: %w", err)
 	}
 
-	decryptedSessionKey, err := utils.Decrypt(session.SessionKey, utils.SecretKey)
+	decryptedSessionKey, err := utils.Decrypt(session.SessionKey, utils.GetSecretKey())
 	if err != nil {
 		return "", "", fmt.Errorf("failed to decrypt session key: %w", err)
 	}

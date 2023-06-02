@@ -42,12 +42,12 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(err)
 			goto ContinueExecution
 		}
-		decryptedClientCode, err := utils.Decrypt(session.ClientCode, utils.SecretKey)
+		decryptedClientCode, err := utils.Decrypt(session.ClientCode, utils.GetSecretKey())
 		if err != nil {
 			fmt.Println(err)
 			goto ContinueExecution
 		}
-		decryptedSessionKey, err := utils.Decrypt(session.SessionKey, utils.SecretKey)
+		decryptedSessionKey, err := utils.Decrypt(session.SessionKey, utils.GetSecretKey())
 		if err != nil {
 			fmt.Println(err)
 			goto ContinueExecution
