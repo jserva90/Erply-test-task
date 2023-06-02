@@ -13,6 +13,10 @@ func (app *application) routes() http.Handler {
 
 	mux.Get("/", app.Home)
 	mux.Post("/", app.Home)
+	mux.Post("/verifyUser", app.verifyUserSwagger)
+	mux.Post("/getSessionKeyInfo", app.getSessionKeyInfoSwagger)
+	mux.Post("/getCustomers", app.getCustomersSwagger)
+	mux.Post("/saveCustomer", app.saveCustomerSwagger)
 
 	mux.Route("/admin", func(mux chi.Router) {
 		mux.Use(app.authRequired)

@@ -1,4 +1,293 @@
 basePath: /
+definitions:
+  models.CustomerRecord:
+    properties:
+      EDI:
+        type: string
+      GLN:
+        type: string
+      PeppolID:
+        type: string
+      address:
+        type: string
+      address2:
+        type: string
+      addressTypeID:
+        type: integer
+      addressTypeName:
+        type: string
+      birthday:
+        type: string
+      city:
+        type: string
+      code:
+        type: string
+      colorStatus:
+        type: string
+      companyName:
+        type: string
+      companyTypeID:
+        type: integer
+      country:
+        type: string
+      countryID:
+        type: string
+      credit:
+        type: integer
+      creditCardLastNumbers:
+        type: string
+      customerBalanceDisabled:
+        type: integer
+      customerCardNumber:
+        type: string
+      customerID:
+        type: integer
+      customerType:
+        type: string
+      deliveryTypeID:
+        type: integer
+      doNotSell:
+        type: integer
+      docuraEDIEnabled:
+        type: integer
+      eInvoiceEmail:
+        type: string
+      eInvoiceEnabled:
+        type: integer
+      eInvoiceReference:
+        type: string
+      ediType:
+        type: string
+      email:
+        type: string
+      emailEnabled:
+        type: integer
+      emailOptOut:
+        type: integer
+      euCustomerType:
+        type: string
+      externalIDs:
+        items: {}
+        type: array
+      facebookName:
+        type: string
+      factoringContractNumber:
+        type: string
+      fax:
+        type: string
+      firstName:
+        type: string
+      flagStatus:
+        type: integer
+      fullName:
+        type: string
+      gender:
+        type: string
+      groupID:
+        type: integer
+      groupName:
+        type: string
+      homeStoreID:
+        type: integer
+      id:
+        type: integer
+      image:
+        type: string
+      integrationCode:
+        type: string
+      isPOSDefaultCustomer:
+        type: integer
+      lastModifierEmployeeID:
+        type: integer
+      lastModifierUsername:
+        type: string
+      lastName:
+        type: string
+      mailEnabled:
+        type: integer
+      mobile:
+        type: string
+      operatorIdentifier:
+        type: string
+      partialTaxExemption:
+        type: integer
+      payerID:
+        type: integer
+      paysViaFactoring:
+        type: integer
+      personTitleID:
+        type: integer
+      phone:
+        type: string
+      posCouponsDisabled:
+        type: integer
+      postalCode:
+        type: string
+      referenceNumber:
+        type: string
+      rewardPoints:
+        type: integer
+      rewardPointsDisabled:
+        type: integer
+      salesBlocked:
+        type: integer
+      signUpStoreID:
+        type: integer
+      state:
+        type: string
+      street:
+        type: string
+      taxExempt:
+        type: integer
+      twitterID:
+        type: string
+    type: object
+  models.CustomerResponse:
+    properties:
+      records:
+        items:
+          $ref: '#/definitions/models.CustomerRecord'
+        type: array
+      status:
+        $ref: '#/definitions/models.Status'
+    type: object
+  models.DownloadURL:
+    properties:
+      operatingSystem:
+        type: string
+      url:
+        type: string
+    type: object
+  models.GetSessionKeyInfoResponse:
+    properties:
+      records:
+        items:
+          $ref: '#/definitions/models.SessionKeyRecord'
+        type: array
+      status:
+        $ref: '#/definitions/models.Status'
+    type: object
+  models.Record:
+    properties:
+      berlinPOSAssetsURL:
+        type: string
+      berlinPOSVersion:
+        type: string
+      couponRegistryURLs:
+        items:
+          type: string
+        type: array
+      customerRegistryURLs:
+        items:
+          type: string
+        type: array
+      displayAdManagerURLs:
+        items:
+          type: string
+        type: array
+      employeeID:
+        type: string
+      employeeName:
+        type: string
+      epsiDownloadURLs:
+        items:
+          $ref: '#/definitions/models.DownloadURL'
+        type: array
+      epsiURL:
+        type: string
+      groupID:
+        type: string
+      groupName:
+        type: string
+      identityToken:
+        type: string
+      ipAddress:
+        type: string
+      isPasswordExpired:
+        type: boolean
+      loginUrl:
+        type: string
+      remindUserToUpdateUsername:
+        type: integer
+      sessionKey:
+        type: string
+      sessionLength:
+        type: integer
+      token:
+        type: string
+      userID:
+        type: string
+      userName:
+        type: string
+    type: object
+  models.Response:
+    properties:
+      records:
+        items:
+          $ref: '#/definitions/models.Record'
+        type: array
+      status:
+        $ref: '#/definitions/models.Status'
+    type: object
+  models.SaveCustomerRecord:
+    properties:
+      alreadyExists:
+        type: boolean
+      clientID:
+        type: integer
+      customerID:
+        type: integer
+    type: object
+  models.SaveCustomerResponse:
+    properties:
+      records:
+        items:
+          $ref: '#/definitions/models.SaveCustomerRecord'
+        type: array
+      status:
+        $ref: '#/definitions/models.SaveCustomerResponseStatus'
+    type: object
+  models.SaveCustomerResponseStatus:
+    properties:
+      errorCode:
+        type: integer
+      generationTime:
+        type: number
+      recordsInResponse:
+        type: integer
+      recordsTotal:
+        type: integer
+      request:
+        type: string
+      requestUnixTime:
+        type: integer
+      responseStatus:
+        type: string
+    type: object
+  models.SessionKeyRecord:
+    properties:
+      creationUnixTime:
+        type: string
+      expireUnixTime:
+        type: string
+    type: object
+  models.Status:
+    properties:
+      errorCode:
+        type: integer
+      generationTime:
+        type: number
+      recordsInResponse:
+        type: integer
+      recordsTotal:
+        type: integer
+      request:
+        type: string
+      requestUnixTime:
+        type: integer
+      responseStatus:
+        type: string
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -6,58 +295,113 @@ info:
   title: Erply Test Task
   version: "1.0"
 paths:
-  /:
-    get:
-      description: Displays the home page
-      responses: {}
-      summary: Home Page
-      tags:
-      - Admin
+  /getCustomers:
     post:
-      description: Displays the home page
-      responses: {}
-      summary: Home Page
-      tags:
-      - Admin
-  /admin/customers:
-    get:
-      description: Fetches the customers
-      responses: {}
-      summary: Fetch Customers
-      tags:
-      - Admin
-  /admin/logout:
-    get:
-      description: Logs out the user
-      responses: {}
-      summary: Logout
-      tags:
-      - Admin
-  /admin/main:
-    get:
-      description: Displays the main page
-      responses: {}
-      summary: Main Page
-      tags:
-      - Admin
-  /admin/savecustomer:
-    get:
-      description: Saves a customer
-      responses: {}
-      summary: Save Customer
-      tags:
-      - Admin
+      description: Retrieves customer information by making a request to ERPLY API
+      parameters:
+      - description: Client code
+        in: query
+        name: clientCode
+        required: true
+        type: string
+      - description: Session key
+        in: query
+        name: sessionKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CustomerResponse'
+      summary: Get customer information
+  /getSessionKeyInfo:
     post:
-      description: Saves a customer
-      responses: {}
-      summary: Save Customer
-      tags:
-      - Admin
-  /admin/success:
-    get:
-      description: Displays the success page
-      responses: {}
-      summary: Success Page
-      tags:
-      - Admin
+      description: Retrieves session key information by making a request to ERPLY
+        API
+      parameters:
+      - description: Client code
+        in: query
+        name: clientCode
+        required: true
+        type: string
+      - description: Session key
+        in: query
+        name: sessionKey
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetSessionKeyInfoResponse'
+      summary: Get session key information
+  /saveCustomer:
+    post:
+      description: Saves customer information by making a request to ERPLY API
+      parameters:
+      - description: Client code
+        in: query
+        name: clientCode
+        required: true
+        type: string
+      - description: Session key
+        in: query
+        name: sessionKey
+        required: true
+        type: string
+      - description: Full name
+        in: query
+        name: fullName
+        required: true
+        type: string
+      - description: Email
+        in: query
+        name: email
+        required: true
+        type: string
+      - description: Phone number
+        in: query
+        name: phoneNumber
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.SaveCustomerResponse'
+      summary: Save customer information
+  /verifyUser:
+    post:
+      description: Verifies the user credentials by making a request to ERPLY API
+      parameters:
+      - description: Client code
+        in: query
+        name: clientCode
+        required: true
+        type: string
+      - description: Username
+        in: query
+        name: username
+        required: true
+        type: string
+      - description: Password
+        in: query
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Response'
+      summary: Verify user credentials
 swagger: "2.0"

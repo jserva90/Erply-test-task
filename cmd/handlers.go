@@ -15,11 +15,6 @@ type Error struct {
 	Message string
 }
 
-// MainPage handles the main page request.
-// @Summary Main Page
-// @Description Displays the main page
-// @Tags Admin
-// @Router /admin/main [get]
 func (app *application) MainPage(w http.ResponseWriter, r *http.Request) {
 	template := template.Must(template.ParseFiles("templates/main.html"))
 
@@ -39,12 +34,6 @@ func (app *application) MainPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Home handles the home page request.
-// @Summary Home Page
-// @Description Displays the home page
-// @Tags Admin
-// @Router / [get]
-// @Router / [post]
 func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_token")
 	if err == nil {
@@ -119,11 +108,6 @@ ContinueExecution:
 	}
 }
 
-// Logout handles the logout request.
-// @Summary Logout
-// @Description Logs out the user
-// @Tags Admin
-// @Router /admin/logout [get]
 func (app *application) Logout(w http.ResponseWriter, r *http.Request) {
 	currentCookie, err := r.Cookie("session_token")
 	if err != nil {
@@ -143,11 +127,6 @@ func (app *application) Logout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-// FetchCustomers handles the fetch customers request.
-// @Summary Fetch Customers
-// @Description Fetches the customers
-// @Tags Admin
-// @Router /admin/customers [get]
 func (app *application) FetchCustomers(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_token")
 	if err != nil {
@@ -170,7 +149,6 @@ func (app *application) FetchCustomers(w http.ResponseWriter, r *http.Request) {
 		Customers: *customers,
 	}
 
-	// Execute the template and pass the data
 	tmpl, err := template.ParseFiles("templates/result.html")
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
@@ -183,12 +161,6 @@ func (app *application) FetchCustomers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// SaveCustomer handles the save customer request.
-// @Summary Save Customer
-// @Description Saves a customer
-// @Tags Admin
-// @Router /admin/savecustomer [get]
-// @Router /admin/savecustomer [post]
 func (app *application) SaveCustomer(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/admin/savecustomer" {
 		ErrorHandler(w, "not found", http.StatusNotFound)
@@ -228,11 +200,6 @@ func (app *application) SaveCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Success handles the success page request.
-// @Summary Success Page
-// @Description Displays the success page
-// @Tags Admin
-// @Router /admin/success [get]
 func (app *application) Success(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/admin/success" {
 		ErrorHandler(w, "not found", http.StatusNotFound)
@@ -253,7 +220,6 @@ func (app *application) Success(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// ErrorHandler handles errors and displays error pages.
 func ErrorHandler(w http.ResponseWriter, er string, code int) {
 	w.WriteHeader(code)
 	e := Error{Message: er, Code: code}

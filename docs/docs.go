@@ -15,80 +15,603 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/": {
-            "get": {
-                "description": "Displays the home page",
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Home Page",
-                "responses": {}
-            },
+        "/getCustomers": {
             "post": {
-                "description": "Displays the home page",
-                "tags": [
-                    "Admin"
+                "description": "Retrieves customer information by making a request to ERPLY API",
+                "produces": [
+                    "application/json"
                 ],
-                "summary": "Home Page",
-                "responses": {}
+                "summary": "Get customer information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client code",
+                        "name": "clientCode",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Session key",
+                        "name": "sessionKey",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CustomerResponse"
+                        }
+                    }
+                }
             }
         },
-        "/admin/customers": {
-            "get": {
-                "description": "Fetches the customers",
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Fetch Customers",
-                "responses": {}
-            }
-        },
-        "/admin/logout": {
-            "get": {
-                "description": "Logs out the user",
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Logout",
-                "responses": {}
-            }
-        },
-        "/admin/main": {
-            "get": {
-                "description": "Displays the main page",
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Main Page",
-                "responses": {}
-            }
-        },
-        "/admin/savecustomer": {
-            "get": {
-                "description": "Saves a customer",
-                "tags": [
-                    "Admin"
-                ],
-                "summary": "Save Customer",
-                "responses": {}
-            },
+        "/getSessionKeyInfo": {
             "post": {
-                "description": "Saves a customer",
-                "tags": [
-                    "Admin"
+                "description": "Retrieves session key information by making a request to ERPLY API",
+                "produces": [
+                    "application/json"
                 ],
-                "summary": "Save Customer",
-                "responses": {}
+                "summary": "Get session key information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client code",
+                        "name": "clientCode",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Session key",
+                        "name": "sessionKey",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.GetSessionKeyInfoResponse"
+                        }
+                    }
+                }
             }
         },
-        "/admin/success": {
-            "get": {
-                "description": "Displays the success page",
-                "tags": [
-                    "Admin"
+        "/saveCustomer": {
+            "post": {
+                "description": "Saves customer information by making a request to ERPLY API",
+                "produces": [
+                    "application/json"
                 ],
-                "summary": "Success Page",
-                "responses": {}
+                "summary": "Save customer information",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client code",
+                        "name": "clientCode",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Session key",
+                        "name": "sessionKey",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Full name",
+                        "name": "fullName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Email",
+                        "name": "email",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Phone number",
+                        "name": "phoneNumber",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.SaveCustomerResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/verifyUser": {
+            "post": {
+                "description": "Verifies the user credentials by making a request to ERPLY API",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Verify user credentials",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client code",
+                        "name": "clientCode",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Username",
+                        "name": "username",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Password",
+                        "name": "password",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.CustomerRecord": {
+            "type": "object",
+            "properties": {
+                "EDI": {
+                    "type": "string"
+                },
+                "GLN": {
+                    "type": "string"
+                },
+                "PeppolID": {
+                    "type": "string"
+                },
+                "address": {
+                    "type": "string"
+                },
+                "address2": {
+                    "type": "string"
+                },
+                "addressTypeID": {
+                    "type": "integer"
+                },
+                "addressTypeName": {
+                    "type": "string"
+                },
+                "birthday": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "code": {
+                    "type": "string"
+                },
+                "colorStatus": {
+                    "type": "string"
+                },
+                "companyName": {
+                    "type": "string"
+                },
+                "companyTypeID": {
+                    "type": "integer"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "countryID": {
+                    "type": "string"
+                },
+                "credit": {
+                    "type": "integer"
+                },
+                "creditCardLastNumbers": {
+                    "type": "string"
+                },
+                "customerBalanceDisabled": {
+                    "type": "integer"
+                },
+                "customerCardNumber": {
+                    "type": "string"
+                },
+                "customerID": {
+                    "type": "integer"
+                },
+                "customerType": {
+                    "type": "string"
+                },
+                "deliveryTypeID": {
+                    "type": "integer"
+                },
+                "doNotSell": {
+                    "type": "integer"
+                },
+                "docuraEDIEnabled": {
+                    "type": "integer"
+                },
+                "eInvoiceEmail": {
+                    "type": "string"
+                },
+                "eInvoiceEnabled": {
+                    "type": "integer"
+                },
+                "eInvoiceReference": {
+                    "type": "string"
+                },
+                "ediType": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "emailEnabled": {
+                    "type": "integer"
+                },
+                "emailOptOut": {
+                    "type": "integer"
+                },
+                "euCustomerType": {
+                    "type": "string"
+                },
+                "externalIDs": {
+                    "type": "array",
+                    "items": {}
+                },
+                "facebookName": {
+                    "type": "string"
+                },
+                "factoringContractNumber": {
+                    "type": "string"
+                },
+                "fax": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "flagStatus": {
+                    "type": "integer"
+                },
+                "fullName": {
+                    "type": "string"
+                },
+                "gender": {
+                    "type": "string"
+                },
+                "groupID": {
+                    "type": "integer"
+                },
+                "groupName": {
+                    "type": "string"
+                },
+                "homeStoreID": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "integrationCode": {
+                    "type": "string"
+                },
+                "isPOSDefaultCustomer": {
+                    "type": "integer"
+                },
+                "lastModifierEmployeeID": {
+                    "type": "integer"
+                },
+                "lastModifierUsername": {
+                    "type": "string"
+                },
+                "lastName": {
+                    "type": "string"
+                },
+                "mailEnabled": {
+                    "type": "integer"
+                },
+                "mobile": {
+                    "type": "string"
+                },
+                "operatorIdentifier": {
+                    "type": "string"
+                },
+                "partialTaxExemption": {
+                    "type": "integer"
+                },
+                "payerID": {
+                    "type": "integer"
+                },
+                "paysViaFactoring": {
+                    "type": "integer"
+                },
+                "personTitleID": {
+                    "type": "integer"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "posCouponsDisabled": {
+                    "type": "integer"
+                },
+                "postalCode": {
+                    "type": "string"
+                },
+                "referenceNumber": {
+                    "type": "string"
+                },
+                "rewardPoints": {
+                    "type": "integer"
+                },
+                "rewardPointsDisabled": {
+                    "type": "integer"
+                },
+                "salesBlocked": {
+                    "type": "integer"
+                },
+                "signUpStoreID": {
+                    "type": "integer"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "street": {
+                    "type": "string"
+                },
+                "taxExempt": {
+                    "type": "integer"
+                },
+                "twitterID": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.CustomerResponse": {
+            "type": "object",
+            "properties": {
+                "records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.CustomerRecord"
+                    }
+                },
+                "status": {
+                    "$ref": "#/definitions/models.Status"
+                }
+            }
+        },
+        "models.DownloadURL": {
+            "type": "object",
+            "properties": {
+                "operatingSystem": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.GetSessionKeyInfoResponse": {
+            "type": "object",
+            "properties": {
+                "records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SessionKeyRecord"
+                    }
+                },
+                "status": {
+                    "$ref": "#/definitions/models.Status"
+                }
+            }
+        },
+        "models.Record": {
+            "type": "object",
+            "properties": {
+                "berlinPOSAssetsURL": {
+                    "type": "string"
+                },
+                "berlinPOSVersion": {
+                    "type": "string"
+                },
+                "couponRegistryURLs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "customerRegistryURLs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "displayAdManagerURLs": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "employeeID": {
+                    "type": "string"
+                },
+                "employeeName": {
+                    "type": "string"
+                },
+                "epsiDownloadURLs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.DownloadURL"
+                    }
+                },
+                "epsiURL": {
+                    "type": "string"
+                },
+                "groupID": {
+                    "type": "string"
+                },
+                "groupName": {
+                    "type": "string"
+                },
+                "identityToken": {
+                    "type": "string"
+                },
+                "ipAddress": {
+                    "type": "string"
+                },
+                "isPasswordExpired": {
+                    "type": "boolean"
+                },
+                "loginUrl": {
+                    "type": "string"
+                },
+                "remindUserToUpdateUsername": {
+                    "type": "integer"
+                },
+                "sessionKey": {
+                    "type": "string"
+                },
+                "sessionLength": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "string"
+                },
+                "userName": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Response": {
+            "type": "object",
+            "properties": {
+                "records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Record"
+                    }
+                },
+                "status": {
+                    "$ref": "#/definitions/models.Status"
+                }
+            }
+        },
+        "models.SaveCustomerRecord": {
+            "type": "object",
+            "properties": {
+                "alreadyExists": {
+                    "type": "boolean"
+                },
+                "clientID": {
+                    "type": "integer"
+                },
+                "customerID": {
+                    "type": "integer"
+                }
+            }
+        },
+        "models.SaveCustomerResponse": {
+            "type": "object",
+            "properties": {
+                "records": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.SaveCustomerRecord"
+                    }
+                },
+                "status": {
+                    "$ref": "#/definitions/models.SaveCustomerResponseStatus"
+                }
+            }
+        },
+        "models.SaveCustomerResponseStatus": {
+            "type": "object",
+            "properties": {
+                "errorCode": {
+                    "type": "integer"
+                },
+                "generationTime": {
+                    "type": "number"
+                },
+                "recordsInResponse": {
+                    "type": "integer"
+                },
+                "recordsTotal": {
+                    "type": "integer"
+                },
+                "request": {
+                    "type": "string"
+                },
+                "requestUnixTime": {
+                    "type": "integer"
+                },
+                "responseStatus": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.SessionKeyRecord": {
+            "type": "object",
+            "properties": {
+                "creationUnixTime": {
+                    "type": "string"
+                },
+                "expireUnixTime": {
+                    "type": "string"
+                }
+            }
+        },
+        "models.Status": {
+            "type": "object",
+            "properties": {
+                "errorCode": {
+                    "type": "integer"
+                },
+                "generationTime": {
+                    "type": "number"
+                },
+                "recordsInResponse": {
+                    "type": "integer"
+                },
+                "recordsTotal": {
+                    "type": "integer"
+                },
+                "request": {
+                    "type": "string"
+                },
+                "requestUnixTime": {
+                    "type": "integer"
+                },
+                "responseStatus": {
+                    "type": "string"
+                }
             }
         }
     }
