@@ -11,8 +11,8 @@ import (
 func (app *application) routes() http.Handler {
 	mux := chi.NewRouter()
 
-	mux.Get("/", app.Home)
-	mux.Post("/", app.Home)
+	mux.Get("/", app.Login)
+	mux.Post("/", app.Login)
 	mux.Post("/verifyUser", app.verifyUserSwagger)
 	mux.Post("/getSessionKeyInfo", app.getSessionKeyInfoSwagger)
 	mux.Post("/getCustomers", app.getCustomersSwagger)
@@ -24,6 +24,8 @@ func (app *application) routes() http.Handler {
 		mux.Get("/success", app.Success)
 		mux.Post("/logout", app.Logout)
 		mux.Post("/getcustomers", app.FetchCustomers)
+		mux.Get("/getcustomer", app.FetchCustomer)
+		mux.Post("/getcustomer", app.FetchCustomer)
 		mux.Get("/savecustomer", app.SaveCustomer)
 		mux.Post("/savecustomer", app.SaveCustomer)
 	})

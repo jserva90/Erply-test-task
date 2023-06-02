@@ -34,7 +34,7 @@ func (app *application) MainPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *application) Home(w http.ResponseWriter, r *http.Request) {
+func (app *application) Login(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_token")
 	if err == nil {
 		session, err := app.DB.GetSession(cookie.Value)
@@ -68,7 +68,7 @@ func (app *application) Home(w http.ResponseWriter, r *http.Request) {
 	}
 
 ContinueExecution:
-	template := template.Must(template.ParseFiles("templates/index.html"))
+	template := template.Must(template.ParseFiles("templates/login.html"))
 
 	if r.URL.Path != "/" {
 		ErrorHandler(w, "not found", http.StatusNotFound)
@@ -149,7 +149,7 @@ func (app *application) FetchCustomers(w http.ResponseWriter, r *http.Request) {
 		Customers: *customers,
 	}
 
-	tmpl, err := template.ParseFiles("templates/result.html")
+	tmpl, err := template.ParseFiles("templates/customers.html")
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
@@ -158,6 +158,74 @@ func (app *application) FetchCustomers(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
+	}
+}
+
+func (app *application) FetchCustomer(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/admin/getcustomer" {
+		ErrorHandler(w, "not found", http.StatusNotFound)
+		return
+	}
+
+	template := template.Must(template.ParseFiles("templates/customer.html"))
+	switch r.Method {
+	case "GET":
+		err := template.Execute(w, nil)
+		if err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+	case "POST":
+		cookie, err := r.Cookie("session_token")
+		if err != nil {
+			return
+		}
+
+		decryptedClientCode, decryptedSessionKey, err := app.getClientCodeAndSessionKey(cookie.Value)
+		if err != nil {
+			ErrorHandler(w, err.Error(), http.StatusInternalServerError)
+		}
+
+		customerID := r.FormValue("customer_id")
+
+		customer, err := app.getCustomerByID(decryptedClientCode, decryptedSessionKey, customerID)
+		if err != nil {
+			ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+
+		if len(customer.Records) == 0 {
+			tmpl, err := template.ParseFiles("templates/customer.html")
+			if err != nil {
+				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+			err = tmpl.Execute(w, nil)
+			if err != nil {
+				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+			return
+		}
+
+		data := struct {
+			Customer models.CustomerRecord
+		}{
+			Customer: customer.Records[0],
+		}
+
+		tmpl, err := template.ParseFiles("templates/customer.html")
+		if err != nil {
+			ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+		err = tmpl.Execute(w, data)
+		if err != nil {
+			ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+	default:
+		ErrorHandler(w, "method not supported", http.StatusMethodNotAllowed)
 	}
 }
 

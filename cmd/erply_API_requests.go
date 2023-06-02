@@ -321,6 +321,44 @@ func (app *application) getCustomersSwagger(w http.ResponseWriter, r *http.Reque
 	}
 }
 
+func (app *application) getCustomerByID(clientCode, sessionKey, customerID string) (*models.CustomerResponse, error) {
+	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
+	data := url.Values{}
+	data.Set("clientCode", clientCode)
+	data.Set("sessionKey", sessionKey)
+	data.Set("customerID", customerID)
+	data.Set("request", "getCustomers")
+	data.Set("sendContentType", "1")
+
+	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var bodyBuffer bytes.Buffer
+	_, err = io.Copy(&bodyBuffer, resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	var response models.CustomerResponse
+	err = json.Unmarshal(bodyBuffer.Bytes(), &response)
+	if err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
+
 func (app *application) saveCustomer(clientCode, sessionKey, fullName, email, phoneNumber string) error {
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
 	data := url.Values{}

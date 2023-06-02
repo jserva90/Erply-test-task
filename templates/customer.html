@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Erply-test-task</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-gray-100">
+    <div class="container mx-auto py-6 px-4">
+      <h1 class="text-2xl font-bold mb-4">Erply-test-task</h1>
+
+      <form action="/admin/main" method="get" class="mb-4">
+        <button
+          type="submit"
+          class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md"
+        >
+          Back
+        </button>
+      </form>
+
+      <form action="/admin/getcustomer" method="POST" class="mb-4">
+        <label for="customer_id" class="mr-2 font-semibold">Customer ID:</label>
+        <input
+          type="text"
+          id="customer_id"
+          name="customer_id"
+          placeholder="Enter customer's ID"
+          required
+          class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        /><br /><br />
+        <input
+          type="submit"
+          value="Search"
+          class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md"
+        />
+      </form>
+
+      <ul>
+        <li class="border rounded-md px-4 py-3 mb-4">
+          <strong class="font-semibold">Customer ID:</strong>
+          <span class="ml-2">{{.Customer.CustomerID}}</span><br />
+          <strong class="font-semibold">Full Name:</strong>
+          <span class="ml-2">{{.Customer.FullName}}</span><br />
+          <strong class="font-semibold">Phone:</strong>
+          <span class="ml-2">{{.Customer.Phone}}</span><br />
+          <strong class="font-semibold">Email:</strong>
+          <span class="ml-2">{{.Customer.Email}}</span><br />
+          <strong class="font-semibold">Address:</strong>
+          <span class="ml-2">{{.Customer.Address}}</span><br />
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>

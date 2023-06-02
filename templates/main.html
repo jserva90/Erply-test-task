@@ -15,31 +15,41 @@
   <body class="bg-gray-100">
     <div class="container mx-auto py-6 px-4">
       <h1 class="text-2xl font-bold mb-4">Erply-test-task</h1>
-      <form action="/admin/logout" method="post">
-        <button
-          type="submit"
-          class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md"
-        >
-          Logout
-        </button>
-      </form>
-      <form action="/admin/getcustomers" method="post">
-        <button
-          type="submit"
-          class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md"
-        >
-          Customers
-        </button>
-      </form>
-      <form action="/admin/savecustomer" method="get">
-        <button
-          type="submit"
-          class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md"
-        >
-          Add Customer
-        </button>
-      </form>
       <h2 class="text-lg font-semibold mt-4">Logged In!</h2>
+      <div class="flex justify-between mb-4">
+        <form action="/admin/logout" method="post">
+          <button
+            type="submit"
+            class="px-4 py-2 bg-red-500 text-white font-semibold rounded-md"
+          >
+            Logout
+          </button>
+        </form>
+        <form action="/admin/getcustomers" method="post">
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md"
+          >
+            Customers
+          </button>
+        </form>
+        <form action="/admin/getcustomer" method="get">
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md"
+          >
+            Get Customer by ID
+          </button>
+        </form>
+        <form action="/admin/savecustomer" method="get">
+          <button
+            type="submit"
+            class="px-4 py-2 bg-green-500 text-white font-semibold rounded-md"
+          >
+            Add Customer
+          </button>
+        </form>
+      </div>
     </div>
   </body>
 </html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Erply-test-task</title>
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body class="bg-gray-100">
+    <div class="container mx-auto py-6 px-4">
+      <h1 class="text-2xl font-bold mb-4">Erply-test-task</h1>
+
+      <form action="/admin/main" method="get" class="mb-4">
+        <button
+          type="submit"
+          class="px-4 py-2 bg-blue-500 text-white font-semibold rounded-md"
+        >
+          Back
+        </button>
+      </form>
+
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead>
+          <tr>
+            <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              Customer ID
+            </th>
+            <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              Full Name
+            </th>
+            <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              Phone
+            </th>
+            <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              Email
+            </th>
+            <th class="px-6 py-3 bg-gray-50 text-left text-xs leading-4 font-medium text-gray-500 uppercase tracking-wider">
+              Address
+            </th>
+           
+          </tr>
+        </thead>
+        <tbody>
+          {{range .Customers.Records}}
+          <tr class="bg-white">
+            <td class="px-6 py-4 whitespace-no-wrap">{{.CustomerID}}</td>
+            <td class="px-6 py-4 whitespace-no-wrap">{{.FullName}}</td>
+            <td class="px-6 py-4 whitespace-no-wrap">{{.Phone}}</td>
+            <td class="px-6 py-4 whitespace-no-wrap">{{.Email}}</td>
+            <td class="px-6 py-4 whitespace-no-wrap">{{.Address}}</td>
+          </tr>
+          {{end}}
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
