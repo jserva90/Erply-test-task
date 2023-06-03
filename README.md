@@ -1,6 +1,6 @@
 # Erply-test-task
 
-This project is a Golang-based API endpoint/middleware that interacts with the Erply API to read and write customer data. It provides simple authentication of requests using a token and utilizes a local database for storage for getting customers.
+This project is a Golang-based API endpoint/middleware that interacts with the Erply API to read and write customer data. It provides simple authentication of requests using a token and utilizes a local database (sqlite3) for storage for getting customers.
 
 ## Table of Contents
 
@@ -33,12 +33,16 @@ Setup a 32-byte Secret Key for encryption in the .env file (For example):
 ## API Documentation
 The Swagger API documentation for the endpoints can be accessed using the following methods:
 - Open http://localhost:8080/swagger/index.html in your browser.
-- Clcck on the **Swagger Docs** button in the UI.
+- Click on the **Swagger Docs** button in the UI.
 
 ## Testing
 Unit tests can be run in the following directories:
 - database
 - utils
 
-To run unit tests write command:
+To run unit tests, go to the corresponging directory and run command:
     ```go test``` or ```go test -v``` for the verbose version.
+
+#### Written in [Go](https://go.dev/) version 1.20
+
+##### Author [Jserva90](https://github.com/jserva90)
