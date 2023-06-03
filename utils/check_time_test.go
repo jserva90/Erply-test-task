@@ -11,7 +11,6 @@ import (
 func TestIsSessionExpired(t *testing.T) {
 	currentTime := time.Now().Unix()
 
-	// Create a sample sessionInfo with expiry time 10 seconds in the past
 	expiryUnixTime := strconv.FormatInt(currentTime-10, 10)
 	sessionInfo := models.GetSessionKeyInfoResponse{
 		Records: []models.SessionKeyRecord{
@@ -27,7 +26,6 @@ func TestIsSessionExpired(t *testing.T) {
 		t.Errorf("Expected session to be expired, but got not expired")
 	}
 
-	// Create a sample sessionInfo with expiry time 10 seconds in the future
 	expiryUnixTime = strconv.FormatInt(currentTime+10, 10)
 	sessionInfo = models.GetSessionKeyInfoResponse{
 		Records: []models.SessionKeyRecord{
@@ -41,5 +39,17 @@ func TestIsSessionExpired(t *testing.T) {
 
 	if isExpired {
 		t.Errorf("Expected session not to be expired, but got expired")
+	}
+}
+
+func TestIsDatabaseCustomerExpired(t *testing.T) {
+	currentTime := time.Now().Unix()
+
+	if !IsDatabaseCustomerExpired(currentTime - 600) {
+		t.Error("Expected expired timestamp, got not expired")
+	}
+
+	if IsDatabaseCustomerExpired(currentTime + 600) {
+		t.Error("Expected not expired timestamp, got expired")
 	}
 }

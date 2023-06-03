@@ -15,7 +15,7 @@ type Error struct {
 	Message string
 }
 
-func (app *application) MainPage(w http.ResponseWriter, r *http.Request) {
+func (app *application) MainPageHandler(w http.ResponseWriter, r *http.Request) {
 	template := template.Must(template.ParseFiles("templates/main.html"))
 
 	if r.URL.Path != "/admin/main" {
@@ -34,7 +34,7 @@ func (app *application) MainPage(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *application) Login(w http.ResponseWriter, r *http.Request) {
+func (app *application) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_token")
 	if err == nil {
 		session, err := app.DB.GetSession(cookie.Value)
@@ -108,7 +108,7 @@ ContinueExecution:
 	}
 }
 
-func (app *application) Logout(w http.ResponseWriter, r *http.Request) {
+func (app *application) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	currentCookie, err := r.Cookie("session_token")
 	if err != nil {
 		http.Redirect(w, r, "/", http.StatusFound)
@@ -127,7 +127,7 @@ func (app *application) Logout(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func (app *application) FetchCustomers(w http.ResponseWriter, r *http.Request) {
+func (app *application) FetchCustomersHandler(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_token")
 	if err != nil {
 		return
@@ -161,7 +161,7 @@ func (app *application) FetchCustomers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *application) FetchCustomer(w http.ResponseWriter, r *http.Request) {
+func (app *application) FetchCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/admin/getcustomer" {
 		ErrorHandler(w, "not found", http.StatusNotFound)
 		return
@@ -188,30 +188,61 @@ func (app *application) FetchCustomer(w http.ResponseWriter, r *http.Request) {
 
 		customerID := r.FormValue("customer_id")
 
-		customer, err := app.getCustomerByID(decryptedClientCode, decryptedSessionKey, customerID)
+		customerDBTimestamp, err := app.DB.GetCustomerAddedTimestampFromDB(customerID, decryptedClientCode)
+		var isDBCustomerExpired bool
 		if err != nil {
-			ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
-			return
+			isDBCustomerExpired = true
+		} else {
+			isDBCustomerExpired = utils.IsDatabaseCustomerExpired(customerDBTimestamp)
 		}
 
-		if len(customer.Records) == 0 {
-			tmpl, err := template.ParseFiles("templates/customer.html")
-			if err != nil {
-				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
-				return
-			}
-			err = tmpl.Execute(w, nil)
-			if err != nil {
-				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
-				return
-			}
-			return
-		}
-
-		data := struct {
+		var data struct {
 			Customer models.CustomerRecord
-		}{
-			Customer: customer.Records[0],
+		}
+
+		if isDBCustomerExpired {
+			fmt.Println("got customer from erply")
+			customer, err := app.getCustomerByID(decryptedClientCode, decryptedSessionKey, customerID)
+			if err != nil {
+				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+
+			if len(customer.Records) == 0 {
+				tmpl, err := template.ParseFiles("templates/customer.html")
+				if err != nil {
+					ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+					return
+				}
+				err = tmpl.Execute(w, nil)
+				if err != nil {
+					ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+					return
+				}
+				return
+			}
+
+			err = app.DB.AddOrUpdateCustomerToDB(
+				customer.Records[0].CustomerID,
+				decryptedClientCode,
+				customer.Records[0].FullName,
+				customer.Records[0].Email,
+				customer.Records[0].Phone,
+			)
+			if err != nil {
+				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+
+			data.Customer = customer.Records[0]
+		} else {
+			fmt.Println("got customer from db")
+			customer, err := app.DB.GetCustomerFromDB(customerID, decryptedClientCode)
+			if err != nil {
+				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+			data.Customer = *customer
 		}
 
 		tmpl, err := template.ParseFiles("templates/customer.html")
@@ -229,7 +260,7 @@ func (app *application) FetchCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *application) SaveCustomer(w http.ResponseWriter, r *http.Request) {
+func (app *application) SaveCustomerHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/admin/savecustomer" {
 		ErrorHandler(w, "not found", http.StatusNotFound)
 		return
@@ -268,7 +299,7 @@ func (app *application) SaveCustomer(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *application) Success(w http.ResponseWriter, r *http.Request) {
+func (app *application) SuccessHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/admin/success" {
 		ErrorHandler(w, "not found", http.StatusNotFound)
 		return

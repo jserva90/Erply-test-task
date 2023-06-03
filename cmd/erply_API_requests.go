@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/jserva90/Erply-test-task/models"
+	"github.com/jserva90/Erply-test-task/utils"
 )
 
 func (app *application) verifyUser(clientCode, username, password string) (*models.Response, error) {
@@ -63,7 +64,6 @@ func (app *application) verifyUser(clientCode, username, password string) (*mode
 // @Param password query string true "Password"
 // @Produce json
 // @Success 200 {object} models.Response
-// @Host https://531748.erply.com/api/
 // @Router /verifyUser [post]
 func (app *application) verifyUserSwagger(w http.ResponseWriter, r *http.Request) {
 	clientCode := r.URL.Query().Get("clientCode")
@@ -357,6 +357,101 @@ func (app *application) getCustomerByID(clientCode, sessionKey, customerID strin
 	}
 
 	return &response, nil
+}
+
+// getCustomersByID is a handler function for retrieving customer information from ERPLY API by customer ID.
+// @Summary Get customer information by customer ID.
+// @Description Retrieves customer information either from local database (if customer data in database is less than 10 minutes old) or by making a request to ERPLY API
+// @Param clientCode query string true "Client code"
+// @Param sessionKey query string true "Session key"
+// @Param customerID query string true "Customer ID"
+// @Produce json
+// @Success 200 {object} models.CustomerRecord
+// @Router /getCustomerByID [post]
+func (app *application) getCustomerByIDSwagger(w http.ResponseWriter, r *http.Request) {
+	clientCode := r.URL.Query().Get("clientCode")
+	sessionKey := r.URL.Query().Get("sessionKey")
+	customerID := r.URL.Query().Get("customerID")
+
+	var isDBCustomerExpired bool
+	var response models.CustomerResponse
+
+	customerAddedDBTimestamp, err := app.DB.GetCustomerAddedTimestampFromDB(customerID, clientCode)
+	if err != nil {
+		isDBCustomerExpired = true
+	}
+	isDBCustomerExpired = utils.IsDatabaseCustomerExpired(customerAddedDBTimestamp)
+
+	if isDBCustomerExpired {
+		apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
+		data := url.Values{}
+		data.Set("clientCode", clientCode)
+		data.Set("sessionKey", sessionKey)
+		data.Set("customerID", customerID)
+		data.Set("request", "getCustomers")
+		data.Set("sendContentType", "1")
+
+		req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		defer resp.Body.Close()
+
+		var bodyBuffer bytes.Buffer
+		_, err = io.Copy(&bodyBuffer, resp.Body)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		err = json.Unmarshal(bodyBuffer.Bytes(), &response)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		if len(response.Records) > 0 {
+			err = app.DB.AddOrUpdateCustomerToDB(
+				response.Records[0].CustomerID,
+				clientCode,
+				response.Records[0].FullName,
+				response.Records[0].Email,
+				response.Records[0].Phone,
+			)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusInternalServerError)
+				return
+			}
+		}
+
+	} else {
+		customer, err := app.DB.GetCustomerFromDB(customerID, clientCode)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		response.Records = append(response.Records, *customer)
+		response.Status.ResponseStatus = "ok"
+		response.Status.RequestFromLocalDB = true
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+
+	err = json.NewEncoder(w).Encode(response)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 }
 
 func (app *application) saveCustomer(clientCode, sessionKey, fullName, email, phoneNumber string) error {

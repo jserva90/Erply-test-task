@@ -12,3 +12,8 @@ func IsSessionExpired(sessionInfo models.GetSessionKeyInfoResponse) bool {
 	convertedExpiryUnixTime, _ := strconv.ParseInt(sessionInfo.Records[0].ExpireUnixTime, 10, 64)
 	return currentTime > convertedExpiryUnixTime
 }
+
+func IsDatabaseCustomerExpired(timestamp int64) bool {
+	expirationTime := time.Unix(timestamp, 0).Add(10 * time.Minute)
+	return time.Now().After(expirationTime)
+}

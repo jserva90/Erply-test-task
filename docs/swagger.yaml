@@ -295,6 +295,35 @@ info:
   title: Erply Test Task
   version: "1.0"
 paths:
+  /getCustomerByID:
+    post:
+      description: Retrieves customer information either from local database (if customer
+        data in database is less than 10 minutes old) or by making a request to ERPLY
+        API
+      parameters:
+      - description: Client code
+        in: query
+        name: clientCode
+        required: true
+        type: string
+      - description: Session key
+        in: query
+        name: sessionKey
+        required: true
+        type: string
+      - description: Customer ID
+        in: query
+        name: customerID
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CustomerRecord'
+      summary: Get customer information by customer ID.
   /getCustomers:
     post:
       description: Retrieves customer information by making a request to ERPLY API

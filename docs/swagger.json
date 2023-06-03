@@ -9,6 +9,46 @@
     "host": "localhost:8080",
     "basePath": "/",
     "paths": {
+        "/getCustomerByID": {
+            "post": {
+                "description": "Retrieves customer information either from local database (if customer data in database is less than 10 minutes old) or by making a request to ERPLY API",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get customer information by customer ID.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Client code",
+                        "name": "clientCode",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Session key",
+                        "name": "sessionKey",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Customer ID",
+                        "name": "customerID",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CustomerRecord"
+                        }
+                    }
+                }
+            }
+        },
         "/getCustomers": {
             "post": {
                 "description": "Retrieves customer information by making a request to ERPLY API",

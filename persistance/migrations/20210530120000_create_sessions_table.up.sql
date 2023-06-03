@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `sessions`(
-    `user_id`      INTEGER PRIMARY KEY AUTOINCREMENT,
+    `session_id`      INTEGER PRIMARY KEY AUTOINCREMENT,
     `client_code` TEXT NOT NULL,
     `username` TEXT NOT NULL,
     `password` TEXT NOT NULL,
