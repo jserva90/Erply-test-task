@@ -14,7 +14,7 @@ type application struct {
 }
 
 const (
-	PORT = 8080
+	port = 8080
 )
 
 // @title Erply Test Task
@@ -33,8 +33,8 @@ func main() {
 
 	defer app.DB.Connection().Close()
 
-	log.Printf("Starting server at http://localhost:%d/\n", PORT)
-	err = http.ListenAndServe(fmt.Sprintf(":%d", PORT), app.routes())
+	log.Printf("Starting server at http://localhost:%d/\n", port)
+	err = http.ListenAndServe(fmt.Sprintf(":%d", port), app.routes())
 	if err != nil {
 		log.Fatal(err)
 	}

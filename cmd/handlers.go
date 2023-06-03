@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"html/template"
 	"net/http"
 
@@ -9,31 +10,37 @@ import (
 	"github.com/jserva90/Erply-test-task/utils"
 )
 
-type Error struct {
-	Code    int
-	Message string
-}
+const (
+	mainPath           = "/admin/main"
+	fetchCustomerPath  = "/admin/getcustomer"
+	fetchCustomersPath = "/admin/getcustomers"
+	saveCustomerPath   = "/admin/savecustomer"
 
-func (app *application) MainPageHandler(w http.ResponseWriter, r *http.Request) {
-	template := template.Must(template.ParseFiles("templates/main.html"))
+	internalServerError  = "Internal Server Error"
+	loginErrorMessage    = "Invalid credentials"
+	logoutErrorMessage   = "Failed to logout"
+	methodNotAllowedMsg  = "Method Not Allowed"
+	notFoundMessage      = "Not Found"
+	removeSessionMessage = "Failed to remove session"
+	sessionExpiredError  = "Session expired"
+	unauthorizedMessage  = "Unauthorized"
+)
 
-	if r.URL.Path != "/admin/main" {
-		ErrorHandler(w, "not found", http.StatusNotFound)
+func (app *application) mainPageHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != mainPath {
+		handleError(w, notFoundMessage, http.StatusNotFound)
 		return
 	}
 
 	switch r.Method {
 	case "GET":
-		err := template.Execute(w, nil)
-		if err != nil {
-			ErrorHandler(w, "not found", http.StatusNotFound)
-		}
+		renderTemplate(w, "templates/main.html", nil)
 	default:
-		ErrorHandler(w, "method not supported", http.StatusMethodNotAllowed)
+		handleError(w, methodNotAllowedMsg, http.StatusMethodNotAllowed)
 	}
 }
 
-func (app *application) LoginHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) loginHandler(w http.ResponseWriter, r *http.Request) {
 	cookie, err := r.Cookie("session_token")
 	if err == nil {
 		session, err := app.DB.GetSession(cookie.Value)
@@ -62,27 +69,17 @@ func (app *application) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 ContinueExecution:
-	template := template.Must(template.ParseFiles("templates/login.html"))
-
-	if r.URL.Path != "/" {
-		ErrorHandler(w, "not found", http.StatusNotFound)
-		return
-	}
 	switch r.Method {
-	case "GET":
-
-		err := template.Execute(w, nil)
-		if err != nil {
-			ErrorHandler(w, "not found", http.StatusNotFound)
-		}
-	case "POST":
+	case http.MethodGet:
+		renderTemplate(w, "templates/login.html", nil)
+	case http.MethodPost:
 		clientCode := r.FormValue("clientCode")
 		username := r.FormValue("username")
 		password := r.FormValue("password")
 
 		res, err := app.verifyUser(clientCode, username, password)
 		if err != nil {
-			ErrorHandler(w, err.Error(), http.StatusNotFound)
+			handleError(w, loginErrorMessage, http.StatusNotFound)
 			return
 		}
 
@@ -90,7 +87,7 @@ ContinueExecution:
 
 		err = app.DB.AddSession(clientCode, username, password, res.Records[0].SessionKey, uuid)
 		if err != nil {
-			ErrorHandler(w, err.Error(), http.StatusNotFound)
+			handleError(w, notFoundMessage, http.StatusNotFound)
 			return
 		}
 
@@ -98,21 +95,21 @@ ContinueExecution:
 
 		http.Redirect(w, r, "/admin/main", http.StatusSeeOther)
 	default:
-		ErrorHandler(w, "method not supported", http.StatusMethodNotAllowed)
+		handleError(w, methodNotAllowedMsg, http.StatusMethodNotAllowed)
 	}
 }
 
-func (app *application) LogoutHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) logoutHandler(w http.ResponseWriter, r *http.Request) {
 	currentCookie, err := r.Cookie("session_token")
 	if err != nil {
-		http.Redirect(w, r, "/", http.StatusFound)
+		handleError(w, logoutErrorMessage, http.StatusInternalServerError)
 		return
 	}
 
 	currentSessionToken := currentCookie.Value
 	err = app.DB.RemoveSession(currentSessionToken)
 	if err != nil {
-		http.Redirect(w, r, "/", http.StatusFound)
+		handleError(w, removeSessionMessage, http.StatusInternalServerError)
 		return
 	}
 
@@ -121,19 +118,27 @@ func (app *application) LogoutHandler(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
-func (app *application) FetchCustomersHandler(w http.ResponseWriter, r *http.Request) {
+func (app *application) fetchCustomersHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != fetchCustomersPath {
+		handleError(w, notFoundMessage, http.StatusNotFound)
+		return
+	}
+
 	cookie, err := r.Cookie("session_token")
 	if err != nil {
+		handleError(w, err.Error(), http.StatusUnauthorized)
 		return
 	}
 
 	decryptedClientCode, decryptedSessionKey, err := app.getClientCodeAndSessionKey(cookie.Value)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		handleError(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	customers, err := app.getCustomers(decryptedClientCode, decryptedSessionKey)
 	if err != nil {
+		handleError(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -143,75 +148,53 @@ func (app *application) FetchCustomersHandler(w http.ResponseWriter, r *http.Req
 		Customers: *customers,
 	}
 
-	tmpl, err := template.ParseFiles("templates/customers.html")
-	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-	err = tmpl.Execute(w, data)
-	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
+	renderTemplate(w, "templates/customers.html", data)
 }
 
-func (app *application) FetchCustomerHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/admin/getcustomer" {
-		ErrorHandler(w, "not found", http.StatusNotFound)
+func (app *application) fetchCustomerHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != fetchCustomerPath {
+		handleError(w, notFoundMessage, http.StatusNotFound)
 		return
 	}
 
-	template := template.Must(template.ParseFiles("templates/customer.html"))
 	switch r.Method {
-	case "GET":
-		err := template.Execute(w, nil)
-		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-	case "POST":
+	case http.MethodGet:
+		renderTemplate(w, "templates/customer.html", nil)
+	case http.MethodPost:
 		cookie, err := r.Cookie("session_token")
 		if err != nil {
+			handleError(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
 		decryptedClientCode, decryptedSessionKey, err := app.getClientCodeAndSessionKey(cookie.Value)
 		if err != nil {
-			ErrorHandler(w, err.Error(), http.StatusInternalServerError)
+			handleError(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 
 		customerID := r.FormValue("customer_id")
 
 		customerDBTimestamp, err := app.DB.GetCustomerAddedTimestampFromDB(customerID, decryptedClientCode)
-		var isDBCustomerExpired bool
-		if err != nil {
-			isDBCustomerExpired = true
-		} else {
-			isDBCustomerExpired = utils.IsDatabaseCustomerExpired(customerDBTimestamp)
-		}
+		isDBCustomerExpired := err != nil || utils.IsDatabaseCustomerExpired(customerDBTimestamp)
 
-		var data struct {
-			Customer models.CustomerRecord
-		}
+		data := struct {
+			Customer     models.CustomerRecord
+			ErrorMessage string
+		}{}
 
 		if isDBCustomerExpired {
 			customer, err := app.getCustomerByID(decryptedClientCode, decryptedSessionKey, customerID)
 			if err != nil {
-				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+				handleError(w, internalServerError, http.StatusInternalServerError)
 				return
 			}
 
 			if len(customer.Records) == 0 {
-				tmpl, err := template.ParseFiles("templates/customer.html")
-				if err != nil {
-					ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
-					return
-				}
-				err = tmpl.Execute(w, nil)
-				if err != nil {
-					ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
-					return
-				}
+				errorMessage := "Customer not found."
+				data.Customer = models.CustomerRecord{}
+				data.ErrorMessage = errorMessage
+				renderTemplate(w, "templates/customer.html", data)
 				return
 			}
 
@@ -223,7 +206,7 @@ func (app *application) FetchCustomerHandler(w http.ResponseWriter, r *http.Requ
 				customer.Records[0].Phone,
 			)
 			if err != nil {
-				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+				handleError(w, internalServerError, http.StatusInternalServerError)
 				return
 			}
 
@@ -231,50 +214,38 @@ func (app *application) FetchCustomerHandler(w http.ResponseWriter, r *http.Requ
 		} else {
 			customer, err := app.DB.GetCustomerFromDB(customerID, decryptedClientCode)
 			if err != nil {
-				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
+				handleError(w, internalServerError, http.StatusInternalServerError)
 				return
 			}
 			data.Customer = *customer
 		}
 
-		tmpl, err := template.ParseFiles("templates/customer.html")
-		if err != nil {
-			ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-		err = tmpl.Execute(w, data)
-		if err != nil {
-			ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
+		renderTemplate(w, "templates/customer.html", data)
 	default:
-		ErrorHandler(w, "method not supported", http.StatusMethodNotAllowed)
+		handleError(w, methodNotAllowedMsg, http.StatusMethodNotAllowed)
 	}
 }
 
-func (app *application) SaveCustomerHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/admin/savecustomer" {
-		ErrorHandler(w, "not found", http.StatusNotFound)
+func (app *application) saveCustomerHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != saveCustomerPath {
+		handleError(w, notFoundMessage, http.StatusNotFound)
 		return
 	}
 
-	template := template.Must(template.ParseFiles("templates/savecustomer.html"))
 	switch r.Method {
-	case "GET":
-		err := template.Execute(w, nil)
-		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-			return
-		}
-	case "POST":
+	case http.MethodGet:
+		renderTemplate(w, "templates/savecustomer.html", nil)
+	case http.MethodPost:
 		cookie, err := r.Cookie("session_token")
 		if err != nil {
+			handleError(w, err.Error(), http.StatusUnauthorized)
 			return
 		}
 
 		decryptedClientCode, decryptedSessionKey, err := app.getClientCodeAndSessionKey(cookie.Value)
 		if err != nil {
-			ErrorHandler(w, err.Error(), http.StatusUnauthorized)
+			handleError(w, err.Error(), http.StatusUnauthorized)
+			return
 		}
 
 		fullName := r.FormValue("fullName")
@@ -283,45 +254,54 @@ func (app *application) SaveCustomerHandler(w http.ResponseWriter, r *http.Reque
 
 		err = app.saveCustomer(decryptedClientCode, decryptedSessionKey, fullName, email, phoneNumber)
 		if err != nil {
-			ErrorHandler(w, err.Error(), http.StatusMethodNotAllowed)
-		}
-		http.Redirect(w, r, "/admin/success", http.StatusSeeOther)
-	default:
-		ErrorHandler(w, "method not supported", http.StatusMethodNotAllowed)
-	}
-}
-
-func (app *application) SuccessHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/admin/success" {
-		ErrorHandler(w, "not found", http.StatusNotFound)
-		return
-	}
-
-	template := template.Must(template.ParseFiles("templates/success.html"))
-
-	switch r.Method {
-	case "GET":
-		err := template.Execute(w, nil)
-		if err != nil {
-			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			handleError(w, err.Error(), http.StatusMethodNotAllowed)
 			return
 		}
+
+		successMessage := "Customer saved successfully!"
+
+		data := struct {
+			SuccessMessage string
+		}{
+			SuccessMessage: successMessage,
+		}
+
+		renderTemplate(w, "templates/savecustomer.html", data)
 	default:
-		ErrorHandler(w, "method not supported", http.StatusMethodNotAllowed)
+		handleError(w, methodNotAllowedMsg, http.StatusMethodNotAllowed)
 	}
 }
 
-func ErrorHandler(w http.ResponseWriter, er string, code int) {
-	w.WriteHeader(code)
-	e := Error{Message: er, Code: code}
-	html, err := template.ParseFiles("templates/error.html")
+func renderTemplate(w http.ResponseWriter, templatePath string, data interface{}) {
+	tmpl, err := template.ParseFiles(templatePath)
 	if err != nil {
-		http.Error(w, "500: Internal Server Error", http.StatusInternalServerError)
+		handleError(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	err = html.Execute(w, e)
+
+	err = tmpl.Execute(w, data)
 	if err != nil {
-		http.Error(w, "404: Not Found", 404)
+		handleError(w, err.Error(), http.StatusInternalServerError)
 		return
+	}
+}
+
+type ErrorResponse struct {
+	Code    int
+	Message string
+}
+
+func handleError(w http.ResponseWriter, errMsg string, code int) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+
+	errorResponse := ErrorResponse{
+		Message: errMsg,
+		Code:    code,
+	}
+
+	err := json.NewEncoder(w).Encode(errorResponse)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

@@ -11,7 +11,7 @@ func (app *application) authRequired(next http.Handler) http.Handler {
 		}
 		_, err = app.DB.GetSession(cookie.Value)
 		if err != nil {
-			ErrorHandler(w, "unauthorized", http.StatusUnauthorized)
+			handleError(w, "unauthorized", http.StatusUnauthorized)
 			return
 		}
 		next.ServeHTTP(w, r)

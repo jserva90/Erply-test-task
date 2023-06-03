@@ -10,38 +10,39 @@ import (
 )
 
 func (app *application) routes() http.Handler {
-	mux := chi.NewRouter()
+	r := chi.NewRouter()
 
 	corsOptions := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"}, // Adjust the allowed origins accordingly
+		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE"},
 		AllowedHeaders:   []string{"Content-Type"},
 		AllowCredentials: true,
 	})
 
-	mux.Use(corsOptions.Handler)
+	r.Use(corsOptions.Handler)
 
-	mux.Get("/", app.LoginHandler)
-	mux.Post("/", app.LoginHandler)
-	mux.Post("/verifyUser", app.verifyUserSwagger)
-	mux.Post("/getSessionKeyInfo", app.getSessionKeyInfoSwagger)
-	mux.Post("/getCustomers", app.getCustomersSwagger)
-	mux.Post("/getCustomerByID", app.getCustomerByIDSwagger)
-	mux.Post("/saveCustomer", app.saveCustomerSwagger)
-
-	mux.Route("/admin", func(mux chi.Router) {
-		mux.Use(app.authRequired)
-		mux.Get("/main", app.MainPageHandler)
-		mux.Get("/success", app.SuccessHandler)
-		mux.Post("/logout", app.LogoutHandler)
-		mux.Post("/getcustomers", app.FetchCustomersHandler)
-		mux.Get("/getcustomer", app.FetchCustomerHandler)
-		mux.Post("/getcustomer", app.FetchCustomerHandler)
-		mux.Get("/savecustomer", app.SaveCustomerHandler)
-		mux.Post("/savecustomer", app.SaveCustomerHandler)
+	r.Route("/", func(r chi.Router) {
+		r.Get("/", app.loginHandler)
+		r.Post("/", app.loginHandler)
+		r.Post("/verifyUser", app.verifyUserSwagger)
+		r.Post("/getSessionKeyInfo", app.getSessionKeyInfoSwagger)
+		r.Post("/getCustomers", app.getCustomersSwagger)
+		r.Post("/getCustomerByID", app.getCustomerByIDSwagger)
+		r.Post("/saveCustomer", app.saveCustomerSwagger)
 	})
 
-	mux.Mount("/swagger", httpSwagger.WrapHandler)
+	r.Route("/admin", func(r chi.Router) {
+		r.Use(app.authRequired)
+		r.Get("/main", app.mainPageHandler)
+		r.Post("/logout", app.logoutHandler)
+		r.Post("/getcustomers", app.fetchCustomersHandler)
+		r.Get("/getcustomer", app.fetchCustomerHandler)
+		r.Post("/getcustomer", app.fetchCustomerHandler)
+		r.Get("/savecustomer", app.saveCustomerHandler)
+		r.Post("/savecustomer", app.saveCustomerHandler)
+	})
 
-	return mux
+	r.Mount("/swagger", httpSwagger.WrapHandler)
+
+	return r
 }
