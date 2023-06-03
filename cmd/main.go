@@ -25,7 +25,7 @@ const (
 func main() {
 	var app application
 
-	conn, err := database.OpenDB()
+	conn, err := database.OpenDB("./database/database.db")
 	if err != nil {
 		log.Fatal(err)
 	}

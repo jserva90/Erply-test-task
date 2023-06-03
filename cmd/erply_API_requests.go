@@ -16,12 +16,14 @@ import (
 
 func (app *application) verifyUser(clientCode, username, password string) (*models.Response, error) {
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
-	data := url.Values{}
-	data.Set("clientCode", clientCode)
-	data.Set("username", username)
-	data.Set("password", password)
-	data.Set("request", "verifyUser")
-	data.Set("sendContentType", "1")
+
+	data := url.Values{
+		"clientCode":      {clientCode},
+		"username":        {username},
+		"password":        {password},
+		"request":         {"verifyUser"},
+		"sendContentType": {"1"},
+	}
 
 	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
 	if err != nil {
@@ -37,8 +39,8 @@ func (app *application) verifyUser(clientCode, username, password string) (*mode
 	}
 	defer resp.Body.Close()
 
-	var bodyBuffer bytes.Buffer
-	_, err = io.Copy(&bodyBuffer, resp.Body)
+	bodyBuffer := new(bytes.Buffer)
+	_, err = io.Copy(bodyBuffer, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -50,7 +52,7 @@ func (app *application) verifyUser(clientCode, username, password string) (*mode
 	}
 
 	if response.Status.ErrorCode != 0 {
-		return nil, fmt.Errorf("failed to authenticate")
+		return nil, fmt.Errorf("authentication failed: %v", response.Status.ErrorCode)
 	}
 
 	return &response, nil
@@ -71,12 +73,13 @@ func (app *application) verifyUserSwagger(w http.ResponseWriter, r *http.Request
 	password := r.URL.Query().Get("password")
 
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
-	data := url.Values{}
-	data.Set("clientCode", clientCode)
-	data.Set("username", username)
-	data.Set("password", password)
-	data.Set("request", "verifyUser")
-	data.Set("sendContentType", "1")
+	data := url.Values{
+		"clientCode":      {clientCode},
+		"username":        {username},
+		"password":        {password},
+		"request":         {"verifyUser"},
+		"sendContentType": {"1"},
+	}
 
 	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
 	if err != nil {
@@ -94,8 +97,8 @@ func (app *application) verifyUserSwagger(w http.ResponseWriter, r *http.Request
 	}
 	defer resp.Body.Close()
 
-	var bodyBuffer bytes.Buffer
-	_, err = io.Copy(&bodyBuffer, resp.Body)
+	bodyBuffer := new(bytes.Buffer)
+	_, err = io.Copy(bodyBuffer, resp.Body)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -124,11 +127,12 @@ func (app *application) verifyUserSwagger(w http.ResponseWriter, r *http.Request
 
 func (app *application) getSessionKeyInfo(clientCode, sessionKey string) (*models.GetSessionKeyInfoResponse, error) {
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
-	data := url.Values{}
-	data.Set("clientCode", clientCode)
-	data.Set("sessionKey", sessionKey)
-	data.Set("request", "getSessionKeyInfo")
-	data.Set("sendContentType", "1")
+	data := url.Values{
+		"clientCode":      {clientCode},
+		"sessionKey":      {sessionKey},
+		"request":         {"getSessionKeyInfo"},
+		"sendContentType": {"1"},
+	}
 
 	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
 	if err != nil {
@@ -144,8 +148,8 @@ func (app *application) getSessionKeyInfo(clientCode, sessionKey string) (*model
 	}
 	defer resp.Body.Close()
 
-	var bodyBuffer bytes.Buffer
-	_, err = io.Copy(&bodyBuffer, resp.Body)
+	bodyBuffer := new(bytes.Buffer)
+	_, err = io.Copy(bodyBuffer, resp.Body)
 	if err != nil {
 		return nil, err
 	}
@@ -176,18 +180,18 @@ func (app *application) getSessionKeyInfoSwagger(w http.ResponseWriter, r *http.
 	sessionKey := r.URL.Query().Get("sessionKey")
 
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
-	data := url.Values{}
-	data.Set("clientCode", clientCode)
-	data.Set("sessionKey", sessionKey)
-	data.Set("request", "getSessionKeyInfo")
-	data.Set("sendContentType", "1")
+	data := url.Values{
+		"clientCode":      {clientCode},
+		"sessionKey":      {sessionKey},
+		"request":         {"getSessionKeyInfo"},
+		"sendContentType": {"1"},
+	}
 
 	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
@@ -228,17 +232,17 @@ func (app *application) getSessionKeyInfoSwagger(w http.ResponseWriter, r *http.
 
 func (app *application) getCustomers(clientCode, sessionKey string) (*models.CustomerResponse, error) {
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
-	data := url.Values{}
-	data.Set("clientCode", clientCode)
-	data.Set("sessionKey", sessionKey)
-	data.Set("request", "getCustomers")
-	data.Set("sendContentType", "1")
+	data := url.Values{
+		"clientCode":      {clientCode},
+		"sessionKey":      {sessionKey},
+		"request":         {"getCustomers"},
+		"sendContentType": {"1"},
+	}
 
 	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
 	if err != nil {
 		return nil, err
 	}
-
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
@@ -276,18 +280,18 @@ func (app *application) getCustomersSwagger(w http.ResponseWriter, r *http.Reque
 	sessionKey := r.URL.Query().Get("sessionKey")
 
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
-	data := url.Values{}
-	data.Set("clientCode", clientCode)
-	data.Set("sessionKey", sessionKey)
-	data.Set("request", "getCustomers")
-	data.Set("sendContentType", "1")
+	data := url.Values{
+		"clientCode":      {clientCode},
+		"sessionKey":      {sessionKey},
+		"request":         {"getCustomers"},
+		"sendContentType": {"1"},
+	}
 
 	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
@@ -323,18 +327,18 @@ func (app *application) getCustomersSwagger(w http.ResponseWriter, r *http.Reque
 
 func (app *application) getCustomerByID(clientCode, sessionKey, customerID string) (*models.CustomerResponse, error) {
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
-	data := url.Values{}
-	data.Set("clientCode", clientCode)
-	data.Set("sessionKey", sessionKey)
-	data.Set("customerID", customerID)
-	data.Set("request", "getCustomers")
-	data.Set("sendContentType", "1")
+	data := url.Values{
+		"clientCode":      {clientCode},
+		"sessionKey":      {sessionKey},
+		"customerID":      {customerID},
+		"request":         {"getCustomers"},
+		"sendContentType": {"1"},
+	}
 
 	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
 	if err != nil {
 		return nil, err
 	}
-
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
@@ -384,12 +388,13 @@ func (app *application) getCustomerByIDSwagger(w http.ResponseWriter, r *http.Re
 
 	if isDBCustomerExpired {
 		apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
-		data := url.Values{}
-		data.Set("clientCode", clientCode)
-		data.Set("sessionKey", sessionKey)
-		data.Set("customerID", customerID)
-		data.Set("request", "getCustomers")
-		data.Set("sendContentType", "1")
+		data := url.Values{
+			"clientCode":      {clientCode},
+			"sessionKey":      {sessionKey},
+			"customerID":      {customerID},
+			"request":         {"getCustomers"},
+			"sendContentType": {"1"},
+		}
 
 		req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
 		if err != nil {
@@ -456,20 +461,20 @@ func (app *application) getCustomerByIDSwagger(w http.ResponseWriter, r *http.Re
 
 func (app *application) saveCustomer(clientCode, sessionKey, fullName, email, phoneNumber string) error {
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
-	data := url.Values{}
-	data.Set("clientCode", clientCode)
-	data.Set("sessionKey", sessionKey)
-	data.Set("request", "saveCustomer")
-	data.Set("fullName", fullName)
-	data.Set("email", email)
-	data.Set("phone", phoneNumber)
-	data.Set("sendContentType", "1")
+	data := url.Values{
+		"clientCode":      {clientCode},
+		"sessionKey":      {sessionKey},
+		"request":         {"saveCustomer"},
+		"fullName":        {fullName},
+		"email":           {email},
+		"phone":           {phoneNumber},
+		"sendContentType": {"1"},
+	}
 
 	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
 	if err != nil {
 		return err
 	}
-
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
@@ -492,7 +497,7 @@ func (app *application) saveCustomer(clientCode, sessionKey, fullName, email, ph
 	}
 
 	if response.Status.ErrorCode != 0 {
-		return errors.New("could not save customer")
+		return errors.New("failed to save customer")
 	}
 
 	return nil
@@ -517,21 +522,21 @@ func (app *application) saveCustomerSwagger(w http.ResponseWriter, r *http.Reque
 	phoneNumber := r.URL.Query().Get("phoneNumber")
 
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
-	data := url.Values{}
-	data.Set("clientCode", clientCode)
-	data.Set("sessionKey", sessionKey)
-	data.Set("request", "saveCustomer")
-	data.Set("fullName", fullName)
-	data.Set("email", email)
-	data.Set("phone", phoneNumber)
-	data.Set("sendContentType", "1")
+	data := url.Values{
+		"clientCode":      {clientCode},
+		"sessionKey":      {sessionKey},
+		"request":         {"saveCustomer"},
+		"fullName":        {fullName},
+		"email":           {email},
+		"phone":           {phoneNumber},
+		"sendContentType": {"1"},
+	}
 
 	req, err := http.NewRequest("POST", apiURL, strings.NewReader(data.Encode()))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
