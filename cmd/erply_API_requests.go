@@ -377,14 +377,10 @@ func (app *application) getCustomerByIDSwagger(w http.ResponseWriter, r *http.Re
 	sessionKey := r.URL.Query().Get("sessionKey")
 	customerID := r.URL.Query().Get("customerID")
 
-	var isDBCustomerExpired bool
 	var response models.CustomerResponse
 
-	customerAddedDBTimestamp, err := app.DB.GetCustomerAddedTimestampFromDB(customerID, clientCode)
-	if err != nil {
-		isDBCustomerExpired = true
-	}
-	isDBCustomerExpired = utils.IsDatabaseCustomerExpired(customerAddedDBTimestamp)
+	customerDBTimestamp, err := app.DB.GetCustomerAddedTimestampFromDB(customerID, clientCode)
+	isDBCustomerExpired := err != nil || utils.IsDatabaseCustomerExpired(customerDBTimestamp)
 
 	if isDBCustomerExpired {
 		apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
