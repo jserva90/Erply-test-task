@@ -23,9 +23,8 @@ func (m *SqliteDB) Connection() *sql.DB {
 	return m.DB
 }
 
-func OpenDB() (*sql.DB, error) {
+func OpenDB(dbPath string) (*sql.DB, error) {
 	var err error
-	dbPath := "./database/database.db"
 
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
