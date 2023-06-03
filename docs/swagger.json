@@ -43,7 +43,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.CustomerRecord"
+                            "$ref": "#/definitions/models.CustomerResponse"
                         }
                     }
                 }
@@ -639,6 +639,9 @@
                 },
                 "request": {
                     "type": "string"
+                },
+                "requestFromLocalDB": {
+                    "type": "boolean"
                 },
                 "requestUnixTime": {
                     "type": "integer"

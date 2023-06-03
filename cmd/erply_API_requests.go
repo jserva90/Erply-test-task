@@ -366,7 +366,7 @@ func (app *application) getCustomerByID(clientCode, sessionKey, customerID strin
 // @Param sessionKey query string true "Session key"
 // @Param customerID query string true "Customer ID"
 // @Produce json
-// @Success 200 {object} models.CustomerRecord
+// @Success 200 {object} models.CustomerResponse
 // @Router /getCustomerByID [post]
 func (app *application) getCustomerByIDSwagger(w http.ResponseWriter, r *http.Request) {
 	clientCode := r.URL.Query().Get("clientCode")

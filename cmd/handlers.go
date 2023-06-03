@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"html/template"
 	"net/http"
 
@@ -39,24 +38,19 @@ func (app *application) LoginHandler(w http.ResponseWriter, r *http.Request) {
 	if err == nil {
 		session, err := app.DB.GetSession(cookie.Value)
 		if err != nil {
-			fmt.Println(err)
 			goto ContinueExecution
 		}
 		decryptedClientCode, err := utils.Decrypt(session.ClientCode, utils.GetSecretKey())
 		if err != nil {
-			fmt.Println(err)
 			goto ContinueExecution
 		}
 		decryptedSessionKey, err := utils.Decrypt(session.SessionKey, utils.GetSecretKey())
 		if err != nil {
-			fmt.Println(err)
 			goto ContinueExecution
 		}
 
 		sessionInfo, err := app.getSessionKeyInfo(decryptedClientCode, decryptedSessionKey)
 		if err != nil {
-			fmt.Println(err)
-
 			goto ContinueExecution
 		}
 
@@ -201,7 +195,6 @@ func (app *application) FetchCustomerHandler(w http.ResponseWriter, r *http.Requ
 		}
 
 		if isDBCustomerExpired {
-			fmt.Println("got customer from erply")
 			customer, err := app.getCustomerByID(decryptedClientCode, decryptedSessionKey, customerID)
 			if err != nil {
 				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)
@@ -236,7 +229,6 @@ func (app *application) FetchCustomerHandler(w http.ResponseWriter, r *http.Requ
 
 			data.Customer = customer.Records[0]
 		} else {
-			fmt.Println("got customer from db")
 			customer, err := app.DB.GetCustomerFromDB(customerID, decryptedClientCode)
 			if err != nil {
 				ErrorHandler(w, "Internal Server Error", http.StatusInternalServerError)

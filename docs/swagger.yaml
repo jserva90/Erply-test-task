@@ -283,6 +283,8 @@ definitions:
         type: integer
       request:
         type: string
+      requestFromLocalDB:
+        type: boolean
       requestUnixTime:
         type: integer
       responseStatus:
@@ -322,7 +324,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.CustomerRecord'
+            $ref: '#/definitions/models.CustomerResponse'
       summary: Get customer information by customer ID.
   /getCustomers:
     post:

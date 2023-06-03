@@ -49,7 +49,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.CustomerRecord"
+                            "$ref": "#/definitions/models.CustomerResponse"
                         }
                     }
                 }
@@ -645,6 +645,9 @@ const docTemplate = `{
                 },
                 "request": {
                     "type": "string"
+                },
+                "requestFromLocalDB": {
+                    "type": "boolean"
                 },
                 "requestUnixTime": {
                     "type": "integer"
