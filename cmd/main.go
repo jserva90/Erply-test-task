@@ -5,8 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	database "github.com/jserva90/Erply-test-task/database"
 	_ "github.com/jserva90/Erply-test-task/docs"
-	database "github.com/jserva90/Erply-test-task/persistance"
 )
 
 type application struct {
