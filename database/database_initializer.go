@@ -25,7 +25,7 @@ func (m *SqliteDB) Connection() *sql.DB {
 
 func OpenDB() (*sql.DB, error) {
 	var err error
-	dbPath := "./persistance/database.db"
+	dbPath := "./database/database.db"
 
 	db, err := sql.Open("sqlite3", dbPath)
 	if err != nil {
@@ -37,7 +37,7 @@ func OpenDB() (*sql.DB, error) {
 		return nil, err
 	}
 
-	err = migrateDB(db, "persistance/migrations")
+	err = migrateDB(db, "database/migrations")
 	if err != nil {
 		log.Fatalf("Error applying database migrations: %v", err)
 	}
