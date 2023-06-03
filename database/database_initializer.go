@@ -9,9 +9,20 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/jserva90/Erply-test-task/models"
 	_ "github.com/mattes/migrate/source/file"
 	_ "github.com/mattn/go-sqlite3"
 )
+
+type DatabaseRepo interface {
+	Connection() *sql.DB
+	AddOrUpdateCustomerToDB(customerID int, clientCode, fullName, email, phone string) error
+	GetCustomerFromDB(customerID, clientCode string) (*models.CustomerRecord, error)
+	AddSession(clientCode, username, password, sessionKey, sessionToken string) error
+	GetSession(sessionToken string) (*models.Session, error)
+	RemoveSession(sessionToken string) error
+	GetCustomerAddedTimestampFromDB(customerID, clientCode string) (int64, error)
+}
 
 type SqliteDB struct {
 	DB *sql.DB

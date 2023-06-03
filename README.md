@@ -8,6 +8,7 @@ This project is a Golang-based API endpoint/middleware that interacts with the E
 - [Configuration](#configuration)
 - [Usage](#usage)
 - [API Documentation](#api-documentation)
+- [Local storage](#local-storage)
 - [Testing](#testing)
 - [Contributing](#contributing)
 - [License](#license)
@@ -34,6 +35,9 @@ Setup a 32-byte Secret Key for encryption in the .env file (For example):
 The Swagger API documentation for the endpoints can be accessed using the following methods:
 - Open http://localhost:8080/swagger/index.html in your browser.
 - Click on the **Swagger Docs** button in the UI.
+
+## Local Storage
+In this project, I utilize SQLite3 as a local storage mechanism. When a customer is requested from the Erply API, the data is stored in the SQLite3 database. Subsequent requests for the same customer within 10 minutes retrieve the data from the database instead of making a new API request. After 10 minutes, a new API request is made to update the local storage with the latest customer data. This approach improves response time and reduces unnecessary API calls.
 
 ## Testing
 Unit tests can be run in the following directories:

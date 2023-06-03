@@ -10,7 +10,7 @@ import (
 )
 
 type application struct {
-	DB database.SqliteDB
+	DB database.DatabaseRepo
 }
 
 const (
@@ -29,8 +29,8 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	app.DB = database.SqliteDB{DB: conn}
 
+	app.DB = &database.SqliteDB{DB: conn}
 	defer app.DB.Connection().Close()
 
 	log.Printf("Starting server at http://localhost:%d/\n", port)
