@@ -17,7 +17,7 @@ This project is a Golang-based API endpoint/middleware that interacts with the E
 ## Installation
 
 1. Clone the repository:
-   ```bash git clone https://github.com/jserva90/Erply-test-task.git```
+   ```git clone https://github.com/jserva90/Erply-test-task.git```
 2. Change into the project directory:   
    ```cd Erply-test-task```
 3. Install dependencies:
