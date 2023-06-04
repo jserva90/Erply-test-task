@@ -22,17 +22,17 @@ This project is a Golang-based API endpoint/middleware that interacts with the E
    ```cd Erply-test-task```
 3. Install dependencies:
     ```go mod download```
-
-## Configuration
-Setup a 32-byte Secret Key for encryption in the .env file (For example):
-    ```0123456789abcdef0123456789abcdef```
-    
-To use go-sqlite3 package you need to install gcc-5
+4. To use go-sqlite3 package you need to install gcc-5
    ```
 sudo apt-get update
 sudo apt-get install -y build-essential libsqlite3-dev
 export CC=gcc
 ```
+If there are any complications on installing gcc-5, kindly refer to the go-sqlite3 documentation at [https://github.com/mattn/go-sqlite3](https://github.com/mattn/go-sqlite3)
+
+## Configuration
+Setup a 32-byte Secret Key for encryption in the .env file (For example):
+    ```0123456789abcdef0123456789abcdef```
 
 ## Usage
 1. Start the application:
