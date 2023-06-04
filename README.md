@@ -24,13 +24,13 @@ This project is a Golang-based API endpoint/middleware that interacts with the E
     ```go mod download```
 4. To use go-sqlite3 package you need to install gcc-5
 
-    # For Linux
+    ### For Linux
    ```
    sudo apt-get update
    sudo apt-get install -y build-essential libsqlite3-dev
    export CC=gcc
    ```
-   # For Windows
+   ### For Windows
    To install the go-sqlite3 package on Windows, you can follow these steps:
     1. Install SQLite:
         - Download the precompiled SQLite DLL from the official website [https://www.sqlite.org/download.html](https://www.sqlite.org/download.html).
