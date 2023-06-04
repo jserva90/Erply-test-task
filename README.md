@@ -38,7 +38,8 @@ The Swagger API documentation for the endpoints can be accessed using the follow
 - Click on the **Swagger Docs** button in the UI.
 
 ## Authentication
-Authentication in this project requires providing the Erply client code, username (mail address), and password. Upon successful authentication, the login credentials and session key are encrypted and stored in the SQLite3 database. For subsequent requests to get or add customers, the encrypted session key and client code are retrieved from the database, decrypted, and used to authenticate the request to the Erply API. This ensures secure storage and retrieval of authentication information, facilitating seamless and secure API interactions.
+Authentication in this project requires providing the Erply client code, username (mail address), and password. You can get the credentials by registering for at [https://login.erply.com/sign-up](https://login.erply.com/sign-up)
+Upon successful authentication, the login credentials and session key are encrypted and stored in the SQLite3 database. For subsequent requests to get or add customers, the encrypted session key and client code are retrieved from the database, decrypted, and used to authenticate the request to the Erply API. This ensures secure storage and retrieval of authentication information, facilitating seamless and secure API interactions.
 
 ## Local Storage
 In this project, I utilize SQLite3 as a local storage mechanism. When a customer is requested from the Erply API, the data is stored in the SQLite3 database. Subsequent requests for the same customer within 10 minutes retrieve the data from the database instead of making a new API request. After 10 minutes, a new API request is made to update the local storage with the latest customer data. This approach improves response time and reduces unnecessary API calls.
