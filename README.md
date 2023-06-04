@@ -29,7 +29,7 @@ This project is a Golang-based API endpoint/middleware that interacts with the E
    export CC=gcc
    ```
    
-If there are any complications on installing gcc-5, kindly refer to the go-sqlite3 documentation at [https://github.com/mattn/go-sqlite3](https://github.com/mattn/go-sqlite3)
+If there are any complications with installing gcc-5, kindly refer to the go-sqlite3 documentation at [https://github.com/mattn/go-sqlite3](https://github.com/mattn/go-sqlite3)
 
 ## Configuration
 Setup a 32-byte Secret Key for encryption in the .env file (For example):
