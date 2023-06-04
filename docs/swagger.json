@@ -581,33 +581,7 @@
                     }
                 },
                 "status": {
-                    "$ref": "#/definitions/models.SaveCustomerResponseStatus"
-                }
-            }
-        },
-        "models.SaveCustomerResponseStatus": {
-            "type": "object",
-            "properties": {
-                "errorCode": {
-                    "type": "integer"
-                },
-                "generationTime": {
-                    "type": "number"
-                },
-                "recordsInResponse": {
-                    "type": "integer"
-                },
-                "recordsTotal": {
-                    "type": "integer"
-                },
-                "request": {
-                    "type": "string"
-                },
-                "requestUnixTime": {
-                    "type": "integer"
-                },
-                "responseStatus": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.Status"
                 }
             }
         },

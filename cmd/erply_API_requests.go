@@ -177,7 +177,7 @@ func (app *application) getSessionKeyInfo(clientCode, sessionKey string) (*model
 // @Router /getSessionKeyInfo [post]
 func (app *application) getSessionKeyInfoSwagger(w http.ResponseWriter, r *http.Request) {
 	clientCode := r.URL.Query().Get("clientCode")
-	sessionKey := r.URL.Query().Get("sessionKey")
+	sessionKey := r.Header.Get("sessionKey")
 
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
 	data := url.Values{
@@ -277,7 +277,7 @@ func (app *application) getCustomers(clientCode, sessionKey string) (*models.Cus
 // @Router /getCustomers [post]
 func (app *application) getCustomersSwagger(w http.ResponseWriter, r *http.Request) {
 	clientCode := r.URL.Query().Get("clientCode")
-	sessionKey := r.URL.Query().Get("sessionKey")
+	sessionKey := r.Header.Get("sessionKey")
 
 	apiURL := fmt.Sprintf("https://%s.erply.com/api/", clientCode)
 	data := url.Values{
@@ -374,7 +374,7 @@ func (app *application) getCustomerByID(clientCode, sessionKey, customerID strin
 // @Router /getCustomerByID [post]
 func (app *application) getCustomerByIDSwagger(w http.ResponseWriter, r *http.Request) {
 	clientCode := r.URL.Query().Get("clientCode")
-	sessionKey := r.URL.Query().Get("sessionKey")
+	sessionKey := r.Header.Get("sessionKey")
 	customerID := r.URL.Query().Get("customerID")
 
 	var response models.CustomerResponse
@@ -512,7 +512,7 @@ func (app *application) saveCustomer(clientCode, sessionKey, fullName, email, ph
 // @Router /saveCustomer [post]
 func (app *application) saveCustomerSwagger(w http.ResponseWriter, r *http.Request) {
 	clientCode := r.URL.Query().Get("clientCode")
-	sessionKey := r.URL.Query().Get("sessionKey")
+	sessionKey := r.Header.Get("sessionKey")
 	fullName := r.URL.Query().Get("fullName")
 	email := r.URL.Query().Get("email")
 	phoneNumber := r.URL.Query().Get("phoneNumber")

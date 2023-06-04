@@ -245,24 +245,7 @@ definitions:
           $ref: '#/definitions/models.SaveCustomerRecord'
         type: array
       status:
-        $ref: '#/definitions/models.SaveCustomerResponseStatus'
-    type: object
-  models.SaveCustomerResponseStatus:
-    properties:
-      errorCode:
-        type: integer
-      generationTime:
-        type: number
-      recordsInResponse:
-        type: integer
-      recordsTotal:
-        type: integer
-      request:
-        type: string
-      requestUnixTime:
-        type: integer
-      responseStatus:
-        type: string
+        $ref: '#/definitions/models.Status'
     type: object
   models.SessionKeyRecord:
     properties:

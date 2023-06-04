@@ -14,6 +14,13 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
+    "securityDefinitions": {
+        "SessionKeyAuth": {
+          "type": "apiKey",
+          "name": "sessionKey",
+          "in": "header"
+        }
+    },
     "paths": {
         "/getCustomerByID": {
             "post": {
@@ -32,13 +39,6 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Session key",
-                        "name": "sessionKey",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "Customer ID",
                         "name": "customerID",
                         "in": "query",
@@ -52,7 +52,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.CustomerResponse"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                      "SessionKeyAuth": []
+                    }
+                ]
             }
         },
         "/getCustomers": {
@@ -69,13 +74,6 @@ const docTemplate = `{
                         "name": "clientCode",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Session key",
-                        "name": "sessionKey",
-                        "in": "query",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -85,7 +83,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.CustomerResponse"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                      "SessionKeyAuth": []
+                    }
+                ]
             }
         },
         "/getSessionKeyInfo": {
@@ -102,13 +105,6 @@ const docTemplate = `{
                         "name": "clientCode",
                         "in": "query",
                         "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Session key",
-                        "name": "sessionKey",
-                        "in": "query",
-                        "required": true
                     }
                 ],
                 "responses": {
@@ -118,7 +114,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.GetSessionKeyInfoResponse"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                      "SessionKeyAuth": []
+                    }
+                ]
             }
         },
         "/saveCustomer": {
@@ -133,13 +134,6 @@ const docTemplate = `{
                         "type": "string",
                         "description": "Client code",
                         "name": "clientCode",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Session key",
-                        "name": "sessionKey",
                         "in": "query",
                         "required": true
                     },
@@ -172,7 +166,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.SaveCustomerResponse"
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                      "SessionKeyAuth": []
+                    }
+                ]
             }
         },
         "/verifyUser": {
@@ -587,33 +586,7 @@ const docTemplate = `{
                     }
                 },
                 "status": {
-                    "$ref": "#/definitions/models.SaveCustomerResponseStatus"
-                }
-            }
-        },
-        "models.SaveCustomerResponseStatus": {
-            "type": "object",
-            "properties": {
-                "errorCode": {
-                    "type": "integer"
-                },
-                "generationTime": {
-                    "type": "number"
-                },
-                "recordsInResponse": {
-                    "type": "integer"
-                },
-                "recordsTotal": {
-                    "type": "integer"
-                },
-                "request": {
-                    "type": "string"
-                },
-                "requestUnixTime": {
-                    "type": "integer"
-                },
-                "responseStatus": {
-                    "type": "string"
+                    "$ref": "#/definitions/models.Status"
                 }
             }
         },
