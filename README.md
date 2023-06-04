@@ -24,9 +24,9 @@ This project is a Golang-based API endpoint/middleware that interacts with the E
     ```go mod download```
 4. To use go-sqlite3 package you need to install gcc-5
    ```
-      sudo apt-get update
-      sudo apt-get install -y build-essential libsqlite3-dev
-      export CC=gcc
+   sudo apt-get update
+   sudo apt-get install -y build-essential libsqlite3-dev
+   export CC=gcc
    ```
    
 If there are any complications on installing gcc-5, kindly refer to the go-sqlite3 documentation at [https://github.com/mattn/go-sqlite3](https://github.com/mattn/go-sqlite3)
