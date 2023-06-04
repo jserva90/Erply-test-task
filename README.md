@@ -23,11 +23,38 @@ This project is a Golang-based API endpoint/middleware that interacts with the E
 3. Install dependencies:
     ```go mod download```
 4. To use go-sqlite3 package you need to install gcc-5
+
+    # For Linux
    ```
    sudo apt-get update
    sudo apt-get install -y build-essential libsqlite3-dev
    export CC=gcc
    ```
+   # For Windows
+   To install the go-sqlite3 package on Windows, you can follow these steps:
+    1. Install SQLite:
+        - Download the precompiled SQLite DLL from the official website [https://www.sqlite.org/download.html](https://www.sqlite.org/download.html).
+        - Extract the downloaded ZIP file and note the path to the extracted DLL file.
+    2. Install GCC:
+        - Download and install the TDM-GCC compiler [https://jmeubank.github.io/tdm-gcc/download/](https://jmeubank.github.io/tdm-gcc/download/).
+        - During the installation, make sure to select the option to add the compiler to the system's PATH.
+    3. Set environment variables:
+        - Open the Start menu and search for "Environment Variables."
+        - Select "Edit the system environment variables."
+        - In the System Properties window, click the "Environment Variables" button.
+        - In the "System variables" section, click "New" to add a new variable.
+        - Set the variable name as CGO_CFLAGS and the value as -I{path_to_sqlite_headers}. Replace {path_to_sqlite_headers} with the path to the folder containing the SQLite header files. This is typically the folder where you extracted the SQLite DLL in step 1.
+        - Click "OK" to save the variable.
+        - Click "New" again to add another variable.
+        - Set the variable name as CGO_LDFLAGS and the value as -L{path_to_sqlite_dll} -lsqlite3. Replace {path_to_sqlite_dll} with the path to the folder containing the SQLite DLL file.
+    4. Install the go-sqlite3 package:
+        - Open a command prompt.
+        - Run the following command to install the package:
+            ```
+            goCopy code
+            go get github.com/mattn/go-sqlite3
+            ```
+    5. This command will download and install the go-sqlite3 package and its dependencies.
    
 If there are any complications with installing gcc-5, kindly refer to the go-sqlite3 documentation at [https://github.com/mattn/go-sqlite3](https://github.com/mattn/go-sqlite3)
 
