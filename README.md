@@ -36,7 +36,7 @@ export CC=gcc
 
 ## Usage
 1. Start the application:
-    ```make```
+    ```make``` or  ```go run ./cmd```
 2. The application will start at: [http://localhost:8080](http://localhost:8080)
 
 ## API Documentation
