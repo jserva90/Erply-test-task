@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"html/template"
 	"net/http"
 
@@ -292,16 +291,10 @@ type ErrorResponse struct {
 }
 
 func handleError(w http.ResponseWriter, errMsg string, code int) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
-
-	errorResponse := ErrorResponse{
-		Message: errMsg,
+	ErrorResponse := &ErrorResponse{
 		Code:    code,
+		Message: errMsg,
 	}
 
-	err := json.NewEncoder(w).Encode(errorResponse)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	renderTemplate(w, "templates/error.html", ErrorResponse)
 }
