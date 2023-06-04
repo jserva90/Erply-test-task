@@ -22,6 +22,9 @@ const (
 // @description This is a test task for Erply using Erply API.
 // @host localhost:8080
 // @BasePath /
+// @securityDefinitions.apikey SessionKeyAuth
+// @in header
+// @name sessionKey
 func main() {
 	var app application
 

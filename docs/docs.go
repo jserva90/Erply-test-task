@@ -14,16 +14,14 @@ const docTemplate = `{
     },
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
-    "securityDefinitions": {
-        "SessionKeyAuth": {
-          "type": "apiKey",
-          "name": "sessionKey",
-          "in": "header"
-        }
-    },
     "paths": {
         "/getCustomerByID": {
             "post": {
+                "security": [
+                    {
+                        "SessionKeyAuth": []
+                    }
+                ],
                 "description": "Retrieves customer information either from local database (if customer data in database is less than 10 minutes old) or by making a request to ERPLY API",
                 "produces": [
                     "application/json"
@@ -52,16 +50,16 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.CustomerResponse"
                         }
                     }
-                },
-                "security": [
-                    {
-                      "SessionKeyAuth": []
-                    }
-                ]
+                }
             }
         },
         "/getCustomers": {
             "post": {
+                "security": [
+                    {
+                        "SessionKeyAuth": []
+                    }
+                ],
                 "description": "Retrieves customer information by making a request to ERPLY API",
                 "produces": [
                     "application/json"
@@ -83,16 +81,16 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.CustomerResponse"
                         }
                     }
-                },
-                "security": [
-                    {
-                      "SessionKeyAuth": []
-                    }
-                ]
+                }
             }
         },
         "/getSessionKeyInfo": {
             "post": {
+                "security": [
+                    {
+                        "SessionKeyAuth": []
+                    }
+                ],
                 "description": "Retrieves session key information by making a request to ERPLY API",
                 "produces": [
                     "application/json"
@@ -114,16 +112,16 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.GetSessionKeyInfoResponse"
                         }
                     }
-                },
-                "security": [
-                    {
-                      "SessionKeyAuth": []
-                    }
-                ]
+                }
             }
         },
         "/saveCustomer": {
             "post": {
+                "security": [
+                    {
+                        "SessionKeyAuth": []
+                    }
+                ],
                 "description": "Saves customer information by making a request to ERPLY API",
                 "produces": [
                     "application/json"
@@ -166,12 +164,7 @@ const docTemplate = `{
                             "$ref": "#/definitions/models.SaveCustomerResponse"
                         }
                     }
-                },
-                "security": [
-                    {
-                      "SessionKeyAuth": []
-                    }
-                ]
+                }
             }
         },
         "/verifyUser": {
@@ -629,6 +622,13 @@ const docTemplate = `{
                     "type": "string"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "SessionKeyAuth": {
+            "type": "apiKey",
+            "name": "sessionKey",
+            "in": "header"
         }
     }
 }`

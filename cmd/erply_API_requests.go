@@ -171,7 +171,7 @@ func (app *application) getSessionKeyInfo(clientCode, sessionKey string) (*model
 // @Summary Get session key information
 // @Description Retrieves session key information by making a request to ERPLY API
 // @Param clientCode query string true "Client code"
-// @Param sessionKey query string true "Session key"
+// @Security SessionKeyAuth
 // @Produce json
 // @Success 200 {object} models.GetSessionKeyInfoResponse
 // @Router /getSessionKeyInfo [post]
@@ -271,7 +271,7 @@ func (app *application) getCustomers(clientCode, sessionKey string) (*models.Cus
 // @Summary Get customer information
 // @Description Retrieves customer information by making a request to ERPLY API
 // @Param clientCode query string true "Client code"
-// @Param sessionKey query string true "Session key"
+// @Security SessionKeyAuth
 // @Produce json
 // @Success 200 {object} models.CustomerResponse
 // @Router /getCustomers [post]
@@ -367,8 +367,8 @@ func (app *application) getCustomerByID(clientCode, sessionKey, customerID strin
 // @Summary Get customer information by customer ID.
 // @Description Retrieves customer information either from local database (if customer data in database is less than 10 minutes old) or by making a request to ERPLY API
 // @Param clientCode query string true "Client code"
-// @Param sessionKey query string true "Session key"
 // @Param customerID query string true "Customer ID"
+// @Security SessionKeyAuth
 // @Produce json
 // @Success 200 {object} models.CustomerResponse
 // @Router /getCustomerByID [post]
@@ -503,10 +503,10 @@ func (app *application) saveCustomer(clientCode, sessionKey, fullName, email, ph
 // @Summary Save customer information
 // @Description Saves customer information by making a request to ERPLY API
 // @Param clientCode query string true "Client code"
-// @Param sessionKey query string true "Session key"
 // @Param fullName query string true "Full name"
 // @Param email query string true "Email"
 // @Param phoneNumber query string true "Phone number"
+// @Security SessionKeyAuth
 // @Produce json
 // @Success 200 {object} models.SaveCustomerResponse
 // @Router /saveCustomer [post]
