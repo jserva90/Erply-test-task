@@ -30,6 +30,8 @@ This project is a Golang-based API endpoint/middleware that interacts with the E
    sudo apt-get install -y build-essential libsqlite3-dev
    export CC=gcc
    ```
+   Alternatively you can install brew [https://brew.sh/](https://brew.sh/)
+   Once brew is installed, run command: ```Brew install gcc@5```
    ### For Windows
    To install the go-sqlite3 package on Windows, you can follow these steps:
     1. Install SQLite:
