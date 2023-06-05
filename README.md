@@ -67,7 +67,7 @@ Setup a 32-byte Secret Key for encryption in the .env file (For example):
 ## Usage
 1. Start the application:
     ```make``` or  ```go run ./cmd```
-2. The application will start at: [http://localhost:8080](http://localhost:8080)
+2. The application will start at: [http://localhost:8080](http://localhost:8080) there you will also find the UI.
 
 ## API Documentation
 The Swagger API documentation for the endpoints can be accessed using the following methods:
